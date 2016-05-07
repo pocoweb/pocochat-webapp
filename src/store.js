@@ -15,7 +15,7 @@ if (!localStorage.getItem(KEY_CHAT)) {
             },
             {
                 id: 2,
-                name: 'freg',
+                name: 'fred',
                 img: 'dist/images/2.png'
             },
             {
