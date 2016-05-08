@@ -1,14 +1,29 @@
 <script>
     export default {
-        props: ['userList', 'sessionList', 'sessionIndex', 'session', 'search'],
+        props: ['userList', 'sessionList', 'user', 'sessionIndex', 'session', 'search'],
         methods: {
             select (value) {
+                this.sessionIndex = -1;
                 for (var i=0; i<this.sessionList.length; i++) {
                     var item = this.sessionList[i];
-                    if (item.userId1 == value.id || item.userId2 == value.id) {
+                    let id1 = value.id < this.user.id ? value.id : this.user.id;
+                    let id2 = value.id > this.user.id ? value.id : this.user.id;
+                    
+                    if (item.userId1 == id1 && item.userId2 == id2) {
                         this.sessionIndex = i;
                         break;
                     }
+                }
+                console.log('user', this.user);
+                console.log('value', value);
+                console.log('idx', this.sessionIndex);
+                if (this.sessionIndex == -1) {
+                    this.sessionList.push({
+                        userId1: value.id,
+                        userId2: this.user.id,
+                        messages: []
+                    });
+                    this.sessionIndex = this.sessionList.length - 1;
                 }
             }
         },
@@ -24,7 +39,7 @@
     <div class="m-list">
         <ul>
             <li v-for="item in userList | search" :class="{ active: (session.userId1 === item.id) || (session.userId2 === item.id) }" @click="select(item)">
-                <img class="avatar"  width="30" height="30" :alt="item.name" :src="item.img">
+                <img class="avatar"  width="35" height="35" :alt="item.name" :src="item.img">
                 <p class="name">{{item.name}}</p>
             </li>
         </ul>

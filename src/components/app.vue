@@ -60,7 +60,7 @@
     <div>
         <div class="sidebar">
             <card :user="user" :search.sync="search"></card>
-            <list :user-list="userList" :session-list="sessionList" :session="session" :session-index.sync="sessionIndex" :search="search"></list>
+            <list :user-list="userList" :session-list="sessionList" :user="user" :session="session" :session-index.sync="sessionIndex" :search="search"></list>
         </div>
         <div class="main">
             <message :session="session" :user="user" :user-list="userList"></message> 

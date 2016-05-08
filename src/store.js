@@ -1,13 +1,18 @@
 const STORAGE_KEY = 'POCOWEB-CHAT-V1';
-const KEY_ME = STORAGE_KEY + 'ME';
-const KEY_USERS = STORAGE_KEY + 'USERS';
-const KEY_CHAT = STORAGE_KEY + 'CHAT';
+const KEY_ME = STORAGE_KEY + '-ME';
+const KEY_USERS = STORAGE_KEY + '-USERS';
+const KEY_CHAT = STORAGE_KEY + '-CHAT';
 
 // 虚拟数据
 if (!localStorage.getItem(KEY_CHAT)) {
     let now = new Date();
     
     let userList = [
+            {
+                id: 0,
+                name: '智能助手',
+                img: 'dist/images/0.png'
+            },
             {
                 id: 1,
                 name: '朱一婷',
@@ -29,8 +34,8 @@ if (!localStorage.getItem(KEY_CHAT)) {
         // 会话列表
         sessionList: [
             {
-                userId1: 2,
-                userId2: 1,
+                userId1: 1,
+                userId2: 2,
                 messages: [
                     {
                         text: '朱一婷对fred的测试对话',

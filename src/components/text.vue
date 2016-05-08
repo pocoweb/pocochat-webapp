@@ -1,4 +1,17 @@
 <script>
+    function doNotify(inTitle, inBody, inSilent, inIcon) {
+        Notification.requestPermission();
+        var option = {
+            title: inTitle,
+            body: inBody,
+            icon: inIcon
+        }
+        var noti = new Notification(option.title, option);
+        noti.onclick = function () {
+            console.log('Notification clicked')
+        }
+    }
+    
     export default {
         props: ['session', 'user'],
         data () {
@@ -9,14 +22,12 @@
         methods: {
             inputing (e) {
                 if (e.keyCode === 13 && this.text.length) {
-                    console.log('session', this.session);
-                    console.log('user', this.user);
-                    console.log('this', this);
                     this.session.messages.push({
                         text: this.text,
                         date: new Date(),
                         send: this.user.id
                     });
+                    doNotify(this.user.name, this.text, this.user.img);
                     this.text = '';
                 }
             }
