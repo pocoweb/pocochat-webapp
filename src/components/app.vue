@@ -9,16 +9,19 @@
         el: '#chat',
         data () {
             let serverData = store.loadChat();
-            let userId = store.loadMeId();
+            var user = store.loadMe();
+
+            console.log(user);
             var users = store.loadUsers();
-            var user = null;
-            for (var i=0; i<users.length; i++) {
-                if (users[i].id === userId) {
-                    user = users[i];
-                    break;
-                }
-            }
-            users.splice(i, 1);
+
+            // for (var i=0; i<users.length; i++) {
+            //     if (users[i].id === userId) {
+            //         user = users[i];
+            //         break;
+            //     }
+            // }
+
+            users.splice(1, 1);
             
             return {
                 // 登录用户
@@ -61,6 +64,41 @@
         <div class="sidebar">
             <card :user="user" :search.sync="search"></card>
             <list :user-list="userList" :session-list="sessionList" :user="user" :session="session" :session-index.sync="sessionIndex" :search="search"></list>
+
+
+            <div id="userform">
+                <label>Username: </label>
+                <input type="text" placeholder="Ex. user123" id="usernameField">
+                <label>Password: </label>
+                <input type="password" placeholder="***********" maxlength="14" id="passwordField">
+                <button type="button" id="loginButton">Login</button>
+                <button type="button" id="showRegisterForm">Register</button>
+            </div>
+
+
+            <!-- Chatbox area (User logged in) -->
+
+            <div id="messagediv" hidden="yes">
+                <label id="username" style="display:inline-block"></label>
+                <button type="button" id="logoutButton">Logout</button>
+                <div id="chatbox"></div>
+                <input type="text" id="usermsg">
+                <button type="button" id="sendmsg">Send</button>
+            </div>
+
+            <!-- Registration form -->
+
+            <div id="registerDiv" hidden="yes">
+                <h1> Parse API Chat Register form </h1>
+                <div id="credentials">
+                <label>Username: </label>
+                <input type="text" id="regUsername" placeholder="Ex. User123">
+                <label>Password: </label>
+                <input type="password" id="regPassword" placeholder="***********" maxlength="14">
+                <button type="button" id="registerButton">Register</button>
+                <button type="button" id="cancel">Cancel</button>
+                </div>
+            </div>
         </div>
         <div class="main">
             <message :session="session" :user="user" :user-list="userList"></message> 

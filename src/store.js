@@ -3,6 +3,10 @@ const KEY_ME = STORAGE_KEY + '-ME';
 const KEY_USERS = STORAGE_KEY + '-USERS';
 const KEY_CHAT = STORAGE_KEY + '-CHAT';
 
+
+Messages = Parse.Object.extend("Messages");
+
+
 // 虚拟数据
 if (!localStorage.getItem(KEY_CHAT)) {
     let now = new Date();
@@ -83,11 +87,28 @@ export default {
     loadChat () {
         return JSON.parse(localStorage.getItem(KEY_CHAT));
     },
+    loadFriends () {
+        return {};
+    },
     loadUsers () {
         return JSON.parse(localStorage.getItem(KEY_USERS));
     },
-    loadMeId () {
-        return JSON.parse(localStorage.getItem(KEY_ME));
+    loadMe () {
+        //return JSON.parse(localStorage.getItem(KEY_ME));
+        let user = Parse.User.current();
+        if (user != null) {
+            return {
+                'id': user.id,
+                'name': user.get('username'),
+                'avatar': user.get('avatar').url()
+            }
+        } else {
+            return {
+                'id': -1,
+                'name': '未登陆用户',
+                'avatar': 'dist/images/unknown.jpg'
+            }
+        }
     },
     save (store) {
         localStorage.setItem(KEY_CHAT, JSON.stringify(store));

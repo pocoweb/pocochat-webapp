@@ -22,11 +22,24 @@
         methods: {
             inputing (e) {
                 if (e.keyCode === 13 && this.text.length) {
-                    this.session.messages.push({
+                    // this.session.messages.push({
+                    //     text: this.text,
+                    //     date: new Date(),
+                    //     send: this.user.id
+                    // });
+
+                    //var message = $("#usermsg").val().toString();
+
+                    var messageObject = new Messages();
+                    messageObject.save({
                         text: this.text,
-                        date: new Date(),
-                        send: this.user.id
+                        sendFrom: currentUser,
+                        sendTo: this.session.user
+                    }).then(function(object) {
+                        this.text = '';
                     });
+
+
                     doNotify(this.user.name, this.text, this.user.img);
                     this.text = '';
                 }
