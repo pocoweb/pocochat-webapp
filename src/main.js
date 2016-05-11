@@ -4,7 +4,7 @@ Parse.initialize("pocoweb-chat", "XoHirs3LE7PhOYiR");
 Parse.serverURL = 'http://localhost:1337/parse';
 
 Vue.config.debug = true;
-
+Vue.use(VueAsyncData)
 var appVm = new Vue(app);
 
 appVm.currentUser = Parse.User.current();

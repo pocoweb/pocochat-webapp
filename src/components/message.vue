@@ -3,7 +3,7 @@
         props: ['session', 'user', 'userList'],
         computed: {
             sessionUser () {
-                var userId = (this.user.id === this.session.userId1)?this.session.userId2:this.session.userId1;
+                var userId = (this.user.id === this.session.sendFrom)?this.session.sendTo:this.session.sendFrom;
                 let users = this.userList.filter(item => item.id === userId);
                 return users[0];
             }

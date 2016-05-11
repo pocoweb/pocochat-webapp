@@ -1,4 +1,6 @@
 <script>
+    import store from '../store';
+
     function doNotify(inTitle, inBody, inSilent, inIcon) {
         Notification.requestPermission();
         var option = {
@@ -13,7 +15,8 @@
     }
     
     export default {
-        props: ['session', 'user'],
+        self: this,
+        props: ['session', 'user', 'sendTo'],
         data () {
             return {
                 text: ''
@@ -29,18 +32,23 @@
                     // });
 
                     //var message = $("#usermsg").val().toString();
-
-                    var messageObject = new Messages();
-                    messageObject.save({
-                        text: this.text,
-                        sendFrom: currentUser,
-                        sendTo: this.session.user
-                    }).then(function(object) {
+                    console.log(this.sendTo);
+                    store.saveMessage({text:this.text})
+                    .then(function(object){
                         this.text = '';
+                    })
 
-                    });
+                    // var messageObject = new Messages();
+                    // messageObject.save({
+                    //     text: this.text,
+                    //     sendFrom: currentUser,
+                    //     sendTo: this.session.user
+                    // }).then(function(object) {
+                    //     this.text = '';
 
-                    doNotify(this.user.name, this.text, this.user.avatar);
+                    // });
+
+                    doNotify(this.user.name + " to " + this.user.name, this.text, this.user.avatar);
                     this.text = '';
 
                 }

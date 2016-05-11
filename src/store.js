@@ -9,6 +9,9 @@ import { Promise } from 'es6-promise'
 const store = new EventEmitter()
 
 
+var Messages = Parse.Object.extend("Messages");
+
+
 // 虚拟数据
 if (!localStorage.getItem(KEY_CHAT)) {
     let now = new Date();
@@ -39,44 +42,44 @@ if (!localStorage.getItem(KEY_CHAT)) {
     let data = {
         // 会话列表
         sessionList: [
-            {
-                userId1: 'IxJjAum8vW',
-                userId2: 'crASHMirAS',
-                messages: [
-                    {
-                        text: '朱一婷对fred的测试对话',
-                        createdAt: now,
-                        sendFrom: "crASHMirAS"
-                    }, 
-                    {
-                        text: 'fred对朱一婷的测试对话',
-                        createdAt: now,
-                        sendFrom: "IxJjAum8vW"
-                    }
-                ]
-            },
-            {
-                userId1: 'nn8HysalBr',
-                userId2: 'IxJjAum8vW',
-                messages: [
-                    {
-                        text: '孙立文对朱一婷的测试对话',
-                        createdAt: now,
-                        sendFrom: "IxJjAum8vW"
-                    }
-                ]
-            },
-            {
-                userId1: 'nn8HysalBr',
-                userId2: 'crASHMirAS',
-                messages: [
-                    {
-                        text: '孙立文对fred的测试对话',
-                        createdAt: now,
-                        sendFrom: "crASHMirAS"
-                    }
-                ]
-            }
+            // {
+            //     fromUser: 'IxJjAum8vW',
+            //     toUser: 'crASHMirAS',
+            //     messages: [
+            //         {
+            //             text: '朱一婷对fred的测试对话',
+            //             createdAt: now,
+            //             sendFrom: "crASHMirAS"
+            //         }, 
+            //         {
+            //             text: 'fred对朱一婷的测试对话',
+            //             createdAt: now,
+            //             sendFrom: "IxJjAum8vW"
+            //         }
+            //     ]
+            // },
+            // {
+            //     fromUser: 'nn8HysalBr',
+            //     toUser: 'IxJjAum8vW',
+            //     messages: [
+            //         {
+            //             text: '孙立文对朱一婷的测试对话',
+            //             createdAt: now,
+            //             sendFrom: "IxJjAum8vW"
+            //         }
+            //     ]
+            // },
+            // {
+            //     fromUser: 'nn8HysalBr',
+            //     toUser: 'crASHMirAS',
+            //     messages: [
+            //         {
+            //             text: '孙立文对fred的测试对话',
+            //             createdAt: now,
+            //             sendFrom: "crASHMirAS"
+            //         }
+            //     ]
+            // }
         ],
     };
     
@@ -92,37 +95,23 @@ export default {
     loadChat () {
         return JSON.parse(localStorage.getItem(KEY_CHAT));
     },
-    loadFriends () {
-        return {};
-    },
     loadUsers () {
-        return JSON.parse(localStorage.getItem(KEY_USERS));
+        //return JSON.parse(localStorage.getItem(KEY_USERS));
+        var query = new Parse.Query('User');
+        // TODO(liwen) better way?
+        query.notContainedIn('username', ['ai']);
+
+        return query.find();
     },
     loadAI () {
 
-        return new Promise(function(resolve, reject){
-            var query = new Parse.Query('User');
-            query.equalTo('username', 'ai');
-            query.find().then(function(results){
-                var user = results[0];
+        var query = new Parse.Query('User');
+        query.equalTo('username', 'ai');
+        return query.find();
 
-                var ret = {
-                    'id': user.id,
-                    'name': user.get('username'),
-                    'avatar': user.get('avatar').url()
-                };
-                return ret;
+    },
+    loadSession () {
 
-                // error: function(error) {
-                //     // error is an instance of Parse.Error.
-                //     return {
-                //         'id': -1,
-                //         'name': 'AI',
-                //         'avatar': 'dist/images/0.png'
-                //     }
-                // }
-            });
-        });
     },
     loadMe () {
         //return JSON.parse(localStorage.getItem(KEY_ME));
@@ -136,7 +125,8 @@ export default {
             return {
                 'id': user.id,
                 'name': user.get('username'),
-                'avatar': avatar
+                'avatar': avatar,
+                'obj': user
             }
         } else {
             return {
@@ -145,6 +135,14 @@ export default {
                 'avatar': 'dist/images/unknown.jpg'
             }
         }
+    },
+    saveMessage (message){
+        var messages = new Messages();
+        message['sendFrom']=Parse.User.current()
+        message['sendTo']=Parse.User.current()
+        console.log(message);
+
+        return messages.save(message);
     },
     save (store) {
         localStorage.setItem(KEY_CHAT, JSON.stringify(store));

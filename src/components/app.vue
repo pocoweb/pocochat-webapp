@@ -10,9 +10,9 @@
         data () {
             let serverData = store.loadChat();
             var user = store.loadMe();
-            var ai = store.loadAI();
-            console.log(user);
-            var users = store.loadUsers();
+            // var ai = store.loadAI();
+            // console.log(ai);
+            // var users = [];
 
             // for (var i=0; i<users.length; i++) {
             //     if (users[i].id === userId) {
@@ -21,16 +21,20 @@
             //     }
             // }
 
-            users.splice(1, 1);
-            users.push(ai);
+            // users.splice(1, 1);
+            // users.push(ai);
             
             return {
                 // AI
-                ai: ai,
+                ai: {
+                    name: 'ai',
+                    id: 'ai',
+                    avatar: 'dist/images/0.png'
+                },
                 // 登录用户
                 user: user,
                 // 用户列表
-                userList: users,
+                userList: [],
                 // 会话列表
                 sessionList: serverData.sessionList,
                 // 搜索key
@@ -38,14 +42,56 @@
                 // 选中的会话Index
                 sessionIndex: 0,
                 // 条件渲染
-                isShow: false
+                isShow: false,
+
+                // sendTo
+                sendTo: null
             };
+        },
+        asyncData: function() {
+            var self = this;
+            store.loadAI()
+                .then(function(results) {
+                    // returning this as the Promise's resolve value
+                    // will call `vm.$set('msg', msg)` for you
+                    item = results[0];
+                    ai = {
+                            name: item.get('username'),
+                            id: item.id,
+                            avatar: item.get('avatar').url(),
+                            obj: ai
+                        };
+                    self.ai = ai;
+                    self.sendTo = ai;
+                });
+
+            store.loadUsers()
+                .then(function(results) {
+                    // returning this as the Promise's resolve value
+                    // will call `vm.$set('msg', msg)` for you
+                    var items = results;
+
+                    //var userList = [];
+
+                    var item = null;
+                    for(var i =0; i < results.length; i ++ ) {
+                        item = results[i];
+                        console.log(item);
+                        self.userList.push({
+                            name: item.get('username'),
+                            id: item.id,
+                            avatar: item.get('avatar').url(),
+                            obj: item
+                        });
+                    }
+                });
         },
         computed: {
             session () {
                 return this.sessionList[this.sessionIndex];
             }
         },
+
         watch: {
             // 每当sessionList改变时，保存到localStorage中
             sessionList: {
@@ -81,11 +127,11 @@
     <div>
         <div class="sidebar">
             <card :user="user" :search.sync="search"></card>
-            <list :user-list="userList" :session-list="sessionList" :user="user" :session="session" :session-index.sync="sessionIndex" :search="search"></list>
+            <list wait-for="async-data" :ai="ai" :user-list="userList" :session-list="sessionList" :user="user" :session="session" :session-index.sync="sessionIndex" :search="search" :sendTo="sendTo"></list>
         </div>
         <div class="main">
-            <message :session="session" :user="user" :user-list="userList"></message> 
-            <text :session="session" :user="user"></text>
+            <message :session="session" :user="user" :user-list="userList" :sendTo="sendTo"></message> 
+            <text :session="session" :user="user" :sendTo="sendTo"></text>
         </div>
     </div>
 </template>
