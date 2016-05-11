@@ -10,7 +10,7 @@
         data () {
             let serverData = store.loadChat();
             var user = store.loadMe();
-
+            var ai = store.loadAI();
             console.log(user);
             var users = store.loadUsers();
 
@@ -22,8 +22,11 @@
             // }
 
             users.splice(1, 1);
+            users.push(ai);
             
             return {
+                // AI
+                ai: ai,
                 // 登录用户
                 user: user,
                 // 用户列表
@@ -91,9 +94,6 @@
             <div id="messagediv" hidden="yes">
                 <label id="username" style="display:inline-block"></label>
                 <button type="button" id="logoutButton">Logout</button>
-                <div id="chatbox"></div>
-                <input type="text" id="usermsg">
-                <button type="button" id="sendmsg">Send</button>
             </div>
 
             <!-- Registration form -->

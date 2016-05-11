@@ -1,20 +1,30 @@
 import app from './components/app';
 
-Parse.initialize("pocowebparse", "XoHirs3LE7PhOYiR");
+Parse.initialize("pocoweb-chat", "XoHirs3LE7PhOYiR");
 Parse.serverURL = 'http://localhost:1337/parse';
 
 Vue.config.debug = true;
 
 var appVm = new Vue(app);
 
-var loginVm = new Vue({
+var authVM = new Vue({
     el: '#login-page',
     data: {
       pages: {
         isShowLandingPage: true,
         isShowSigninPage: false,
         isShowSignupPage: false
-      }  
+      },
+      username: '',
+      password: ''
+    },
+    $vm: this,
+    // TODO(liwen): try to avoid create the model if the user has signed in.
+    ready: function() {
+        currentUser = Parse.User.current();
+        if (currentUser != null) {
+            this.showApp();
+        }
     },
     computed: {
         isShowLoginPage() {
@@ -28,23 +38,83 @@ var loginVm = new Vue({
         }
     },
     methods: {
+        showApp() {
+            this.pages.isShowLandingPage = false;
+            this.pages.isShowSigninPage = false;
+            this.pages.isShowSignupPage = false;
+            
+            this.clearAuthForm();
+
+            appVm.show();
+        },
+        clearAuthForm() {
+            this.pages.username = '';
+            this.pages.password = '';
+        },
         signin() {
+            console.log('singin');
+
             this.pages.isShowLandingPage = false;
             this.pages.isShowSigninPage = true;
             this.pages.isShowSignupPage = false;
+
+            this.clearAuthForm();
+
             appVm.hide();
         },
         signup() {
+            console.log('singup');
             this.pages.isShowLandingPage = false;
             this.pages.isShowSigninPage = false;
             this.pages.isShowSignupPage = true;
+
+            this.clearAuthForm();
+
             appVm.hide();
         },
         submit() {
-            this.pages.isShowLandingPage = false;
-            this.pages.isShowSigninPage = false;
-            this.pages.isShowSignupPage = false;
-            appVm.show();          
+            console.log('submit');
+
+            console.log(this.username);
+            console.log(this.password);
+
+            // if signin
+            if (this.pages.isShowSigninPage) {
+                Parse.User.logIn(this.username, this.password, {
+                    success: function(user) {
+                        
+                        appVm.currentUser = user;
+
+                        // redirect to app ui
+                        authVM.pages.isShowLandingPage = false;
+                        authVM.pages.isShowSigninPage = false;
+                        authVM.pages.isShowSignupPage = false;
+
+                        appVm.show(); 
+                    },
+
+                    error: function(user, error) {
+                        alert("Error: " + error.code + " " + error.message + "."); 
+                    }
+                });
+            }
+
+            if (this.pages.isShowSignupPage) {
+                var user = new Parse.User();
+                user.set("username", this.username);
+                user.set("password", this.password);
+
+                user.signUp(null, {
+                    success: function(user) {
+                        alert("Thanks for signing up!");
+                        authVM.signin();
+                    },
+
+                    error: function(user, error) {
+                        alert("Error: " + error.code + " " + error.message + ".");
+                    }
+                });
+            }        
         }
     }
 })

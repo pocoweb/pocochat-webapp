@@ -3,8 +3,10 @@ const KEY_ME = STORAGE_KEY + '-ME';
 const KEY_USERS = STORAGE_KEY + '-USERS';
 const KEY_CHAT = STORAGE_KEY + '-CHAT';
 
+import { EventEmitter } from 'events'
+import { Promise } from 'es6-promise'
 
-Messages = Parse.Object.extend("Messages");
+const store = new EventEmitter()
 
 
 // 虚拟数据
@@ -13,24 +15,24 @@ if (!localStorage.getItem(KEY_CHAT)) {
     
     let userList = [
             {
-                id: 0,
+                id: 'abwPeEfkgL',
                 name: '智能助手',
-                img: 'dist/images/0.png'
+                avatar: 'dist/images/0.png'
             },
             {
-                id: 1,
+                id: 'IxJjAum8vW',
                 name: '朱一婷',
-                img: 'dist/images/1.jpg'
+                avatar: 'dist/images/1.jpg'
             },
             {
-                id: 2,
+                id: "crASHMirAS",
                 name: 'fred',
-                img: 'dist/images/2.png'
+                avatar: 'dist/images/2.png'
             },
             {
-                id: 3,
+                id: "nn8HysalBr",
                 name: '孙立文',
-                img: 'dist/images/3.jpg'
+                avatar: 'dist/images/3.jpg'
             }
         ];
     
@@ -38,40 +40,40 @@ if (!localStorage.getItem(KEY_CHAT)) {
         // 会话列表
         sessionList: [
             {
-                userId1: 1,
-                userId2: 2,
+                userId1: 'IxJjAum8vW',
+                userId2: 'crASHMirAS',
                 messages: [
                     {
                         text: '朱一婷对fred的测试对话',
-                        date: now,
-                        send: 1
+                        createdAt: now,
+                        sendFrom: "crASHMirAS"
                     }, 
                     {
                         text: 'fred对朱一婷的测试对话',
-                        date: now,
-                        send: 2
+                        createdAt: now,
+                        sendFrom: "IxJjAum8vW"
                     }
                 ]
             },
             {
-                userId1: 1,
-                userId2: 3,
+                userId1: 'nn8HysalBr',
+                userId2: 'IxJjAum8vW',
                 messages: [
                     {
                         text: '孙立文对朱一婷的测试对话',
-                        date: now,
-                        send: 3
+                        createdAt: now,
+                        sendFrom: "IxJjAum8vW"
                     }
                 ]
             },
             {
-                userId1: 2,
-                userId2: 3,
+                userId1: 'nn8HysalBr',
+                userId2: 'crASHMirAS',
                 messages: [
                     {
                         text: '孙立文对fred的测试对话',
-                        date: now,
-                        send: 3
+                        createdAt: now,
+                        sendFrom: "crASHMirAS"
                     }
                 ]
             }
@@ -83,6 +85,9 @@ if (!localStorage.getItem(KEY_CHAT)) {
     localStorage.setItem(KEY_CHAT, JSON.stringify(data));
 }
 
+
+
+
 export default {
     loadChat () {
         return JSON.parse(localStorage.getItem(KEY_CHAT));
@@ -93,14 +98,45 @@ export default {
     loadUsers () {
         return JSON.parse(localStorage.getItem(KEY_USERS));
     },
+    loadAI () {
+
+        return new Promise(function(resolve, reject){
+            var query = new Parse.Query('User');
+            query.equalTo('username', 'ai');
+            query.find().then(function(results){
+                var user = results[0];
+
+                var ret = {
+                    'id': user.id,
+                    'name': user.get('username'),
+                    'avatar': user.get('avatar').url()
+                };
+                return ret;
+
+                // error: function(error) {
+                //     // error is an instance of Parse.Error.
+                //     return {
+                //         'id': -1,
+                //         'name': 'AI',
+                //         'avatar': 'dist/images/0.png'
+                //     }
+                // }
+            });
+        });
+    },
     loadMe () {
         //return JSON.parse(localStorage.getItem(KEY_ME));
         let user = Parse.User.current();
         if (user != null) {
+
+            var avatar = '';
+            if (user.get('avatar') != null) {
+                avatar = user.get('avatar').url()
+            }
             return {
                 'id': user.id,
                 'name': user.get('username'),
-                'avatar': user.get('avatar').url()
+                'avatar': avatar
             }
         } else {
             return {

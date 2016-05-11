@@ -1,6 +1,6 @@
 <script>
     export default {
-        props: ['userList', 'sessionList', 'user', 'sessionIndex', 'session', 'search'],
+        props: ['ai', 'userList', 'sessionList', 'user', 'sessionIndex', 'session', 'search'],
         methods: {
             select (value) {
                 this.sessionIndex = -1;
@@ -29,7 +29,9 @@
         },
         filters: {
             search (list) {
-                return list.filter(item => item.name.indexOf(this.search) > -1);
+                console.log(list[3]);
+                //return list.filter(item => item.name.indexOf(this.search) > -1);
+                return list;
             }
         }
     };
@@ -38,8 +40,9 @@
 <template>
     <div class="m-list">
         <ul>
+
             <li v-for="item in userList | search" :class="{ active: (session.userId1 === item.id) || (session.userId2 === item.id) }" @click="select(item)">
-                <img class="avatar"  width="35" height="35" :alt="item.name" :src="item.img">
+                <img class="avatar"  width="35" height="35" :alt="item.name" :src="item.avatar">
                 <p class="name">{{item.name}}</p>
             </li>
         </ul>

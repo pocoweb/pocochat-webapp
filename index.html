@@ -39,7 +39,7 @@
     <div v-cloak id="login-page">
         <div v-show="pages.isShowLandingPage">
             <div id="heading">
-                <div id="logo">PocoChat</div>
+                <div id="logo">Pocoweb Chat</div>
                 <div id="tagline">基于LUIS和Bing的人工智能团队协作IM</div>
                 <div id="btnrow">
                     <button v-on:click="signin" class="btn">登录</button>
@@ -61,7 +61,7 @@
                                 </span>
                             </p>
                             <div class="input-fill">
-                                <input type="text" name="email" class="email-signup email-input" autofocus="true">
+                                <input v-model.sync="username" type="text" name="username" class="username-signup username-input" autofocus="true">
                             </div>
                             <span class="warning text-center"></span>
                         </div>
@@ -72,7 +72,7 @@
                                 -->
                             </p>
                             <div class="input-fill">
-                                <input type="password" name="password" class="email-signup password">
+                                <input v-model.sync="password" type="password" name="password" class="username-signup password">
                             </div>
                             <span class="warning warning-password text-center"></span>
                         </div>

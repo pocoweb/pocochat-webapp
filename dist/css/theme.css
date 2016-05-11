@@ -80,7 +80,7 @@ form {
 	position:absolute;
 	background-color:#eb3232
 }
-.email-signup {
+.username-signup {
 	padding-left:14px;
 	padding-right:24px;
 	width:100%;
@@ -92,7 +92,7 @@ form {
 	border-color:#15A05D!important;
 	outline:0
 }
-.email-signup:focus {
+.username-signup:focus {
 	border-color:#15A05D;
 	outline:0
 }

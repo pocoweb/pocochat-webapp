@@ -12,6 +12,7 @@
     "url": "http://pocoweb.com:10080/zhuyiting/pocoweb-chat.git"
   },
   "dependencies": {
+    "es6-promise": "^3.1.2",
     "vue": "^1.0.10"
   },
   "devDependencies": {

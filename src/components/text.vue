@@ -37,11 +37,12 @@
                         sendTo: this.session.user
                     }).then(function(object) {
                         this.text = '';
+
                     });
 
-
-                    doNotify(this.user.name, this.text, this.user.img);
+                    doNotify(this.user.name, this.text, this.user.avatar);
                     this.text = '';
+
                 }
             }
         }

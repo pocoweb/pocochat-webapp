@@ -13,13 +13,18 @@
             avatar (item) {
                 // 如果是自己发的消息显示登录用户的头像
                 let user = (item.send === this.user.id) ? this.user : this.sessionUser;
-                return user && user.img;
+                return user && user.avatar;
             },
             // 将日期过滤为 hour:minutes
             time (date) {
                 if (typeof date === 'string') {
                     date = new Date(date);
                 }
+
+                if (date == null) {
+                    return '';
+                }
+
                 return date.getHours() + ':' + date.getMinutes();
             }
         },
@@ -38,7 +43,7 @@
     <div class="m-message" v-scroll-bottom="session.messages">
         <ul>
             <li v-for="item in session.messages">
-                <p class="time"><span>{{item.date | time}}</span></p>
+                <p class="time"><span>{{item.createdAt}} {{item.createdAt | time}}</span></p>
                 <div class="main" :class="{ self: (item.send === this.user.id) }">
                     <img class="avatar" width="30" height="30" :src="item | avatar" />
                     <div class="text">{{item.text}}</div>
