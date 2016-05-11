@@ -7,6 +7,8 @@ Vue.config.debug = true;
 
 var appVm = new Vue(app);
 
+appVm.currentUser = Parse.User.current();
+
 appVm.authVM = new Vue({
     el: '#login-page',
     data: {
@@ -21,8 +23,8 @@ appVm.authVM = new Vue({
     $vm: this,
     // TODO(liwen): try to avoid create the model if the user has signed in.
     ready: function() {
-        currentUser = Parse.User.current();
-        if (currentUser != null) {
+        appVm.currentUser = Parse.User.current();
+        if (appVm.currentUser != null) {
             this.showApp();
         }
     },
@@ -57,8 +59,8 @@ appVm.authVM = new Vue({
             appVm.hide();
         },
         clearAuthForm() {
-            this.pages.username = '';
-            this.pages.password = '';
+            this.username = '';
+            this.password = '';
         },
         signin() {
             console.log('singin');
@@ -82,7 +84,7 @@ appVm.authVM = new Vue({
             appVm.hide();
         },
         signOut() {
-            currentUser = Parse.User.current();
+            appVm.currentUser = Parse.User.current();
             if (currentUser != null) {
                 Parse.User.logOut();
                 this.showLandingPage();

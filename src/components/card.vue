@@ -5,7 +5,6 @@
             signOut: function() {
                 //alert('signOut');
                 Parse.User.logOut();
-
                 // TODO(liwen) clean up the app model
                 this.$parent.authVM.showLandingPage();
                 this.$parent.hide();
