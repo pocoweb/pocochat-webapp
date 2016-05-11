@@ -129,7 +129,7 @@ export default {
         let user = Parse.User.current();
         if (user != null) {
 
-            var avatar = '';
+            var avatar = 'dist/images/unknown.jpg';
             if (user.get('avatar') != null) {
                 avatar = user.get('avatar').url()
             }

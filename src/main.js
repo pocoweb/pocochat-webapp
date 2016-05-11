@@ -7,7 +7,7 @@ Vue.config.debug = true;
 
 var appVm = new Vue(app);
 
-var authVM = new Vue({
+appVm.authVM = new Vue({
     el: '#login-page',
     data: {
       pages: {
@@ -47,6 +47,15 @@ var authVM = new Vue({
 
             appVm.show();
         },
+        showLandingPage() {
+            this.pages.isShowLandingPage = true;
+            this.pages.isShowSigninPage = false;
+            this.pages.isShowSignupPage = false;
+            
+            this.clearAuthForm();
+
+            appVm.hide();
+        },
         clearAuthForm() {
             this.pages.username = '';
             this.pages.password = '';
@@ -72,6 +81,15 @@ var authVM = new Vue({
 
             appVm.hide();
         },
+        signOut() {
+            currentUser = Parse.User.current();
+            if (currentUser != null) {
+                Parse.User.logOut();
+                this.showLandingPage();
+            } else {
+                this.showLandingPage();
+            }
+        },
         submit() {
             console.log('submit');
 
@@ -86,9 +104,9 @@ var authVM = new Vue({
                         appVm.currentUser = user;
 
                         // redirect to app ui
-                        authVM.pages.isShowLandingPage = false;
-                        authVM.pages.isShowSigninPage = false;
-                        authVM.pages.isShowSignupPage = false;
+                        appVm.authVM.pages.isShowLandingPage = false;
+                        appVm.authVM.pages.isShowSigninPage = false;
+                        appVm.authVM.pages.isShowSignupPage = false;
 
                         appVm.show(); 
                     },
@@ -107,7 +125,7 @@ var authVM = new Vue({
                 user.signUp(null, {
                     success: function(user) {
                         alert("Thanks for signing up!");
-                        authVM.signin();
+                        appVm.authVM.signin();
                     },
 
                     error: function(user, error) {

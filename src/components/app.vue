@@ -63,9 +63,14 @@
         methods: {
             show() {
                 this.isShow = true;
+
+                this.user = store.loadMe();
+
             },
             hide() {
                 this.isShow = false;
+
+                // TODO(liwen) cleanup the model?
             }
         }
     };
