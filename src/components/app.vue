@@ -33,7 +33,9 @@
                 // 搜索key
                 search: '',
                 // 选中的会话Index
-                sessionIndex: 0
+                sessionIndex: 0,
+                // 条件渲染
+                isShow: false
             };
         },
         computed: {
@@ -54,6 +56,14 @@
         },
         components: {
             card, list, text, message
+        },
+        methods: {
+            show() {
+                this.isShow = true;
+            },
+            hide() {
+                this.isShow = false;
+            }
         }
     };
 
