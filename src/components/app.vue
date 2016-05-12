@@ -9,7 +9,6 @@
         el: '#chat',
         data () {
             let serverData = store.loadChat();
-            var user = store.loadMe();
             // var ai = store.loadAI();
             // console.log(ai);
             // var users = [];
@@ -31,67 +30,33 @@
                     id: 'ai',
                     avatar: 'dist/images/0.png'
                 },
-                // 登录用户
-                user: user,
+                // 当前用户Parse Id
+                currentUser: null,
+                // 当前用户信息
+                user: {
+                    'id': -1,
+                    'name': '未登陆用户',
+                    'avatar': 'dist/images/unknown.jpg'
+                },
                 // 用户列表
                 userList: [],
                 // 会话列表
                 sessionList: serverData.sessionList,
+                // 待处理消息
+                tempSession: null,
                 // 搜索key
                 search: '',
                 // 选中的会话Index
                 sessionIndex: 0,
                 // 条件渲染
                 isShow: false,
-
-                // sendTo
-                sendTo: null
             };
-        },
-        asyncData: function() {
-            var self = this;
-            store.loadAI()
-                .then(function(results) {
-                    // returning this as the Promise's resolve value
-                    // will call `vm.$set('msg', msg)` for you
-                    item = results[0];
-                    ai = {
-                            name: item.get('username'),
-                            id: item.id,
-                            avatar: item.get('avatar').url(),
-                            obj: ai
-                        };
-                    self.ai = ai;
-                    self.sendTo = ai;
-                });
-
-            store.loadUsers()
-                .then(function(results) {
-                    // returning this as the Promise's resolve value
-                    // will call `vm.$set('msg', msg)` for you
-                    var items = results;
-
-                    //var userList = [];
-
-                    var item = null;
-                    for(var i =0; i < results.length; i ++ ) {
-                        item = results[i];
-                        console.log(item);
-                        self.userList.push({
-                            name: item.get('username'),
-                            id: item.id,
-                            avatar: item.get('avatar').url(),
-                            obj: item
-                        });
-                    }
-                });
         },
         computed: {
             session () {
                 return this.sessionList[this.sessionIndex];
             }
         },
-
         watch: {
             // 每当sessionList改变时，保存到localStorage中
             sessionList: {
@@ -101,6 +66,12 @@
                         sessionList: this.sessionList
                     });
                 }
+            },
+            tempSession: {
+                deep: true,
+                handler () {
+                    store.send(this.tempSession);
+                }
             }
         },
         components: {
@@ -109,15 +80,53 @@
         methods: {
             show() {
                 this.isShow = true;
-
-                this.user = store.loadMe();
-
+                this.user = this.creatUser(this.currentUser);
+                store.loadUsers(this.currentUser, this.addUserList);
+                
+                var SessionQuery = new Parse.Query('TempTest');
+                var subscription = SessionQuery.subscribe();
+                subscription.on('open', () => {
+                    console.log('subscription opened');
+                });
+                subscription.on('create', (object) => {
+                    console.log('object created');
+                });
+                subscription.on('update', (object) => {
+                    console.log('object updated');
+                });
+                subscription.on('close', () => {
+                    console.log('subscription closed');
+                });
             },
             hide() {
                 this.isShow = false;
-
-                // TODO(liwen) cleanup the model?
+            },
+            newUser() {
+                store.saveGroupUser(this.currentUser);
+            },
+            creatUser(parseUser) {
+                if (parseUser != null) {
+                    var avatar = parseUser.get('avatar');
+                    if (avatar ==  null) {
+                        avatar = 'dist/images/unknown.jpg';
+                    }
+                    return {
+                        'id': parseUser.id,
+                        'name': parseUser.get('username'),
+                        'avatar': avatar
+                    }
+                } else {
+                    return {
+                        'id': -1,
+                        'name': '未登陆用户',
+                        'avatar': 'dist/images/unknown.jpg'
+                    }
+                }
+            },
+            addUserList(groupUser) {
+                this.userList.push(this.creatUser(groupUser));
             }
+
         }
     };
 
@@ -127,10 +136,10 @@
     <div>
         <div class="sidebar">
             <card :user="user" :search.sync="search"></card>
-            <list wait-for="async-data" :ai="ai" :user-list="userList" :session-list="sessionList" :user="user" :session="session" :session-index.sync="sessionIndex" :search="search" :sendTo="sendTo"></list>
+            <list :ai="ai" :user-list.sync="userList" :session-list="sessionList" :user="user" :session="session" :session-index.sync="sessionIndex" :search="search" :sendTo="sendTo"></list>
         </div>
         <div class="main">
-            <message :session="session" :user="user" :user-list="userList" :sendTo="sendTo"></message> 
+            <message :session="session" :user="user" :user-list.sync="userList" :sendTo="sendTo"></message> 
             <text :session="session" :user="user" :sendTo="sendTo"></text>
         </div>
     </div>

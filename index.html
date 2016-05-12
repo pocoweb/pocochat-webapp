@@ -76,6 +76,13 @@
                             </div>
                             <span class="warning warning-password text-center"></span>
                         </div>
+                        <div class="login-input-group" v-show="pages.isShowSignupPage">
+                            <p class="input-title">组织：</p>
+                            <div class="input-fill">
+                                <input v-model.sync="group" type="text" name="password" class="username-signup password">
+                            </div>
+                            <span class="warning warning-password text-center"></span>
+                        </div>
                     </div>
                     <div class="login-sub text-center">
                         <button class="btn btn-org-empty" id="login-btn" style="outline:0;" v-on:click="submit">{{submitBtnStr}}</button>

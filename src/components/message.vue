@@ -20,11 +20,9 @@
                 if (typeof date === 'string') {
                     date = new Date(date);
                 }
-
                 if (date == null) {
                     return '';
                 }
-
                 return date.getHours() + ':' + date.getMinutes();
             }
         },

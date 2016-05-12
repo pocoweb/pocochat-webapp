@@ -3,14 +3,22 @@ const KEY_ME = STORAGE_KEY + '-ME';
 const KEY_USERS = STORAGE_KEY + '-USERS';
 const KEY_CHAT = STORAGE_KEY + '-CHAT';
 
-import { EventEmitter } from 'events'
-import { Promise } from 'es6-promise'
+Parse.initialize("pocowebchat", "njLwbUJgejKCjC2y");
+Parse.serverURL = 'http://pocoweb.com:11337/parse';
 
-const store = new EventEmitter()
+Parse.LiveQuery.on('error', (error) => {
+  console.log('socket connection error', error);
+});
+Parse.LiveQuery.on('open', () => {
+  console.log('socket connection established');
+});
+Parse.LiveQuery.on('close', () => {
+  console.log('socket connection closed');
+});
 
-
+var ParseSession = Parse.Object.extend('TempTest');
+var ParseGroupUsers = Parse.Object.extend('GroupUsers');
 var Messages = Parse.Object.extend("Messages");
-
 
 // 虚拟数据
 if (!localStorage.getItem(KEY_CHAT)) {
@@ -89,62 +97,84 @@ if (!localStorage.getItem(KEY_CHAT)) {
 }
 
 
-
-
 export default {
-    loadChat () {
+    loadChat() {
         return JSON.parse(localStorage.getItem(KEY_CHAT));
     },
-    loadUsers () {
-        //return JSON.parse(localStorage.getItem(KEY_USERS));
-        var query = new Parse.Query('User');
-        // TODO(liwen) better way?
-        query.notContainedIn('username', ['ai']);
-
-        return query.find();
+    loadUsers(user, callback) {
+        var query = new Parse.Query('GroupUsers');
+        query.equalTo('group', user.get('group'));
+        query.notEqualTo('uid', user.id);
+        query.find({
+            success: function(results) {
+                for (var i = 0; i < results.length; i++) {
+                    var uid = results[i].get('uid');
+                    console.log('group users:', uid);
+                    
+                    var userQuery = new Parse.Query('User');
+                    userQuery.get(uid, {
+                        success: function(data) {
+                            console.log('got user:', data, data.get('username'));
+                            callback(data);
+                        },
+                        error: function(data, error) {
+                            console.log("load user Error: " + error.code + " " + error.message);
+                        }
+                    });
+                }
+            },
+            error: function(error) {
+                console.log("load group users Error: " + error.code + " " + error.message);
+            }
+        });
     },
-    loadAI () {
-
+    loadAI() {
         var query = new Parse.Query('User');
         query.equalTo('username', 'ai');
         return query.find();
 
     },
-    loadSession () {
+    loadSession() {
 
     },
-    loadMe () {
-        //return JSON.parse(localStorage.getItem(KEY_ME));
-        let user = Parse.User.current();
-        if (user != null) {
-
-            var avatar = 'dist/images/unknown.jpg';
-            if (user.get('avatar') != null) {
-                avatar = user.get('avatar').url()
-            }
-            return {
-                'id': user.id,
-                'name': user.get('username'),
-                'avatar': avatar,
-                'obj': user
-            }
-        } else {
-            return {
-                'id': -1,
-                'name': '未登陆用户',
-                'avatar': 'dist/images/unknown.jpg'
-            }
-        }
+    loadMe(parseUser) {
+        return creatUser(parseUser);
     },
-    saveMessage (message){
+    saveMessage(message){
         var messages = new Messages();
         message['sendFrom']=Parse.User.current()
         message['sendTo']=Parse.User.current()
         console.log(message);
-
         return messages.save(message);
     },
-    save (store) {
+    send(tempSession) {
+        var session = new ParseSession();
+        for ( var p in tempSession ) {
+            session.set(p, tempSession[p]);
+        }
+        session.save(null, {
+            success: function(data) {
+                console.log('send session ok', data);
+            },
+            error: function(data, error) {
+                console.log('send session ng, with error code: ' + error.description);
+            }
+        });
+    },
+    save(store) {
         localStorage.setItem(KEY_CHAT, JSON.stringify(store));
+    },
+    saveGroupUser(parseUser) {
+        var groupUser = new ParseGroupUsers();
+        groupUser.set('group', parseUser.get('group'));
+        groupUser.set('uid', parseUser.id);
+        groupUser.save(null, {
+            success: function(data) {
+                console.log('saveGroupUser ok', data);
+            },
+            error: function(data, error) {
+                console.log('saveGroupUser ng, with error code: ' + error.description);
+            }
+        });
     }
 };
