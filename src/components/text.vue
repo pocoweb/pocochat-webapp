@@ -28,10 +28,9 @@
                     var sendData = {
                         from: this.user.id,
                         to: this.session.id1 == this.user.id ? this.session.id2 : this.session.id1,
-                        msg: this.text,
-                        date: new Date()
+                        msg: this.text
                     }
-                    this.session.messages.push(sendData);
+                    //this.session.messages.push(sendData);
                     store.send(sendData);
                     this.text = '';
                 }

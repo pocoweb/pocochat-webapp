@@ -92,7 +92,7 @@ appVm.authVM = new Vue({
                 user.signUp(null, {
                     success: function(user) {
                         console.log("signup success", user);
-                        appVm.newUser();
+                        appVm.regUser();
                         appVm.currentUser = user;
                         appVm.authVM.showApp();
                     },

@@ -41,7 +41,7 @@
     <div class="m-message" v-scroll-bottom="session.messages">
         <ul>
             <li v-for="item in session.messages">
-                <p class="time"><span>{{item.date | time}}</span></p>
+                <p class="time"><span>{{item.createAt | time}}</span></p>
                 <div class="main" :class="{ self: (item.from === this.user.id) }">
                     <img class="avatar" width="30" height="30" :src="item | avatar" />
                     <div class="text">{{item.msg}}</div>

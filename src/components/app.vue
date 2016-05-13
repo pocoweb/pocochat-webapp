@@ -5,8 +5,8 @@
     import text from './text';
     import message from './message';
     
-    var SessionQuery = new Parse.Query('TempTest');
-
+    let SessionQuery = new Parse.Query('Messages');
+    
     export default {
         el: '#chat',
         data () {
@@ -26,7 +26,7 @@
                 // 搜索key
                 search: '',
                 // 选中的会话Index
-                sessionIndex: -1,
+                sessionIndex: 0,
                 // 条件渲染
                 isShow: false,
                 // parse liveQuery
@@ -35,7 +35,7 @@
         },
         computed: {
             session () {
-                if (this.sessionIndex >= 0) {
+                if (this.sessionList.length > 0 && this.sessionIndex >= 0) {
                     return this.sessionList[this.sessionIndex];
                 }
                 return {
@@ -77,7 +77,7 @@
                 this.isShow = true;
                 this.user = this.creatUser(this.currentUser);
                 store.loadUsers(this.currentUser, this.addUserList);
-                this.wsopen();
+                this.wsopen(this.sessionCreateCB);
             },
             hide() {
                 this.isShow = false;
@@ -87,22 +87,34 @@
                 this.authVM.showLandingPage();
                 this.clearData();
             },
-            wsopen() {
+            wsopen(currentUser, createCB) {
                 this.subscription = SessionQuery.subscribe();
                 this.subscription.on('open', () => {
                     console.log('subscription opened');
                 });
-                this.subscription.on('create', (object) => {
-                    console.log('object created', object);
-                });
-                this.subscription.on('update', (object) => {
-                    console.log('object updated', object);
+                this.subscription.on('create', (session) => {
+                    createCB(currentUser, session);
                 });
                 this.subscription.on('close', () => {
                     console.log('subscription closed');
                 });
             },
-            newUser() {
+            sessionCreateCB(session) {
+                let userId1 = session.get('from'), userId2 = session.get('to');
+                if (this.user.id !== userId1 && this.user.id !== userId2) {
+                    return;
+                }
+                var index = this.selectSession(userId1, userId2);
+                if (index >= 0) {
+                    this.sessionList[index].messages.push({
+                        from: session.get('from'),
+                        to: session.get('to'),
+                        msg: session.get('msg'),
+                        createAt: session.get('createAt')
+                    });
+                }
+            },
+            regUser() {
                 store.saveGroupUser(this.currentUser);
             },
             creatUser(parseUser) {
@@ -125,7 +137,32 @@
                 }
             },
             addUserList(groupUser) {
-                this.userList.push(this.creatUser(groupUser));
+                var newUser = this.creatUser(groupUser);
+                this.userList.push(newUser);
+                
+                let userId1 = newUser.id, userId2 = this.user.id;
+                let id1 = userId1 < userId2 ? userId1 : userId2;
+                let id2 = userId1 > userId2 ? userId1 : userId2;
+                if (this.selectSession(id1, id2) < 0) {
+                    this.sessionList.push({
+                        id1: id1,
+                        id2: id2,
+                        messages: []                       
+                    });
+                }
+            },
+            selectSession(userId1, userId2) {
+                let id1 = userId1 < userId2 ? userId1 : userId2;
+                let id2 = userId1 > userId2 ? userId1 : userId2;
+                var sessionIndex = -1;
+                for (var i=0; i<this.sessionList.length; i++) {
+                    var item = this.sessionList[i];
+                    if (item.id1 == id1 && item.id2 == id2) {
+                        sessionIndex = i;
+                        break;
+                    }
+                }
+                return sessionIndex;
             }
 
         }

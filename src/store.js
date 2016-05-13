@@ -1,30 +1,11 @@
 const STORAGE_KEY = 'POCOWEB-CHAT-V1';
-const KEY_ME = STORAGE_KEY + '-ME';
-const KEY_USERS = STORAGE_KEY + '-USERS';
 const KEY_CHAT = STORAGE_KEY + '-CHAT';
 
 Parse.initialize("pocowebchat", "njLwbUJgejKCjC2y");
 Parse.serverURL = 'http://pocoweb.com:11337/parse';
 
-//Parse.LiveQuery.on('error', (error) => {
-//  console.log('socket connection error', error);
-//});
-//Parse.LiveQuery.on('open', () => {
-//  console.log('socket connection established');
-//});
-//Parse.LiveQuery.on('close', () => {
-//  console.log('socket connection closed');
-//});
-
-var ParseSession = Parse.Object.extend('TempTest');
+var ParseSession = Parse.Object.extend('Messages');
 var ParseGroupUsers = Parse.Object.extend('GroupUsers');
-
-// 虚拟数据
-if (!localStorage.getItem(KEY_CHAT)) {
-    localStorage.setItem(KEY_ME, JSON.stringify(1));
-    localStorage.setItem(KEY_USERS, JSON.stringify(userList));
-    localStorage.setItem(KEY_CHAT, JSON.stringify(data));
-}
 
 function loadUserByID(uid, callback) {
     var userQuery = new Parse.Query('User');
@@ -40,15 +21,21 @@ function loadUserByID(uid, callback) {
 }
 
 export default {
+    getAIId() {
+        return 'PhU3ki2QQV';
+    },
+    getGroupId() {
+        return '7SDMDWUPFh';
+    },
     loadChat() {
         return JSON.parse(localStorage.getItem(KEY_CHAT));
     },
     loadUsers(user, callback) {
         //默认，智能助手
-        loadUserByID('PhU3ki2QQV', callback);
+        loadUserByID(this.getAIId(), callback);
         
         //默认，群聊
-        loadUserByID('7SDMDWUPFh', callback);
+        loadUserByID(this.getGroupId(), callback);
         
         var query = new Parse.Query('GroupUsers');
         query.equalTo('group', user.get('group'));
@@ -66,19 +53,12 @@ export default {
             }
         });
     },
-    loadSession() {
-
-    },
     loadMe(parseUser) {
         return creatUser(parseUser);
     },
     send(tempSession) {
-        console.log('send', tempSession);
         var session = new ParseSession();
-        for ( var p in tempSession ) {
-            session.set(p, tempSession[p]);
-        }
-        session.save(null, {
+        session.save(tempSession, {
             success: function(data) {
                 console.log('send session ok', data);
             },
