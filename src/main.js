@@ -77,7 +77,6 @@ appVm.authVM = new Vue({
                     success: function(user) {
                         console.log("signin success", user);
                         appVm.currentUser = user;
-                        appVm.newUser();
                         appVm.authVM.showApp();
                     },
                     error: function(user, error) {
@@ -93,6 +92,7 @@ appVm.authVM = new Vue({
                 user.signUp(null, {
                     success: function(user) {
                         console.log("signup success", user);
+                        appVm.newUser();
                         appVm.currentUser = user;
                         appVm.authVM.showApp();
                     },

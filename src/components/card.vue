@@ -3,11 +3,7 @@
         props: ['main', 'user', 'search'],
         methods: {
             signOut: function() {
-                //alert('signOut');
-                Parse.User.logOut();
-                // TODO(liwen) clean up the app model
-                this.$parent.authVM.showLandingPage();
-                this.$parent.hide();
+                this.$parent.signout();
             }
         }
     };
@@ -16,7 +12,7 @@
 <template>
     <div class="m-card">
         <header>
-            <img class="avatar" width="40" height="40" :alt.sync="user.name" :src.sync="user.avatar">
+            <img class="avatar" width="50" height="50" :alt.sync="user.name" :src.sync="user.avatar">
             <p class="name">{{user.name}}</p>
             <button class="btn btn-xs signout" type="button" @click="signOut()">登出</button>
         </header>

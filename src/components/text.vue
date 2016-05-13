@@ -16,7 +16,7 @@
     
     export default {
         self: this,
-        props: ['session', 'user', 'sendTo'],
+        props: ['session', 'user'],
         data () {
             return {
                 text: ''
@@ -24,33 +24,16 @@
         },
         methods: {
             inputing (e) {
-                if (e.keyCode === 13 && this.text.length) {
-                    // this.session.messages.push({
-                    //     text: this.text,
-                    //     date: new Date(),
-                    //     send: this.user.id
-                    // });
-
-                    //var message = $("#usermsg").val().toString();
-                    console.log(this.sendTo);
-                    store.saveMessage({text:this.text})
-                    .then(function(object){
-                        this.text = '';
-                    })
-
-                    // var messageObject = new Messages();
-                    // messageObject.save({
-                    //     text: this.text,
-                    //     sendFrom: currentUser,
-                    //     sendTo: this.session.user
-                    // }).then(function(object) {
-                    //     this.text = '';
-
-                    // });
-
-                    doNotify(this.user.name + " to " + this.user.name, this.text, this.user.avatar);
+                if (e.keyCode === 13 && this.text.length) { 
+                    var sendData = {
+                        from: this.user.id,
+                        to: this.session.id1 == this.user.id ? this.session.id2 : this.session.id1,
+                        msg: this.text,
+                        date: new Date()
+                    }
+                    this.session.messages.push(sendData);
+                    store.send(sendData);
                     this.text = '';
-
                 }
             }
         }

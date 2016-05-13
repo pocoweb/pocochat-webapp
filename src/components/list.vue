@@ -1,34 +1,29 @@
 <script>
-    import store from '../store';
-
     export default {
-        props: ['ai', 'userList', 'sessionList', 'user', 'sessionIndex', 'session', 'search', 'sendTo'],
+        props: ['userList', 'sessionList', 'user', 'sessionIndex', 'session', 'search'],
 
         methods: {
             select (value) {
+                let id1 = value.id < this.user.id ? value.id : this.user.id;
+                let id2 = value.id > this.user.id ? value.id : this.user.id;
+                
                 this.sessionIndex = -1;
                 for (var i=0; i<this.sessionList.length; i++) {
                     var item = this.sessionList[i];
-                    let id1 = value.id < this.user.id ? value.id : this.user.id;
-                    let id2 = value.id > this.user.id ? value.id : this.user.id;
-                    
-                    if (item.fromUser == id1 && item.toUser == id2) {
+                    if (item.id1 == id1 && item.id2 == id2) {
                         this.sessionIndex = i;
                         break;
                     }
                 }
-                console.log('user', this.user);
-                console.log('value', value);
-                console.log('idx', this.sessionIndex);
+                console.log(id1, id2, this.sessionIndex);
                 if (this.sessionIndex == -1) {
                     this.sessionList.push({
-                        sendFrom: value.obj,
-                        sendTo: this.user.obj,
+                        id1: id1,
+                        id2: id2,
                         messages: []
                     });
                     this.sessionIndex = this.sessionList.length - 1;
                 }
-
             }
         },
         filters: {
@@ -45,13 +40,8 @@
 <template>
     <div class="m-list">
         <ul>
-            <li :class="active" @click="select(ai)">
-                <img class="avatar"  width="35" height="35" :alt="ai.name" :src="ai.avatar">
-                <p class="name">{{ai.name}}</p>
-            </li>
-            <li v-for="item in userList | search" :class="{ active: (session.fromUser === item.id) || (session.toUser === item.id) }" @click="select(item)">
-            <!-- <li v-for="item in userList | search" :class="active" @click="select(item)"> -->
-                <img class="avatar"  width="35" height="35" :alt="item.name" :src="item.avatar">
+            <li v-for="item in userList | search" :class="{ active: (session.id1 === item.id) || (session.id2 === item.id) }" @click="select(item)">
+                <img class="avatar"  width="40" height="40" :alt="item.name" :src="item.avatar">
                 <p class="name">{{item.name}}</p>
             </li>
         </ul>

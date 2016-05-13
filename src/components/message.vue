@@ -3,7 +3,7 @@
         props: ['session', 'user', 'userList'],
         computed: {
             sessionUser () {
-                var userId = (this.user.id === this.session.sendFrom)?this.session.sendTo:this.session.sendFrom;
+                var userId = (this.user.id === this.session.id1)?this.session.id2:this.session.id1;
                 let users = this.userList.filter(item => item.id === userId);
                 return users[0];
             }
@@ -12,16 +12,16 @@
             // 筛选出用户头像
             avatar (item) {
                 // 如果是自己发的消息显示登录用户的头像
-                let user = (item.send === this.user.id) ? this.user : this.sessionUser;
+                let user = (item.from === this.user.id) ? this.user : this.sessionUser;
                 return user && user.avatar;
             },
             // 将日期过滤为 hour:minutes
             time (date) {
-                if (typeof date === 'string') {
-                    date = new Date(date);
-                }
                 if (date == null) {
                     return '';
+                }
+                if (typeof date === 'string') {
+                    date = new Date(date);
                 }
                 return date.getHours() + ':' + date.getMinutes();
             }
@@ -41,10 +41,10 @@
     <div class="m-message" v-scroll-bottom="session.messages">
         <ul>
             <li v-for="item in session.messages">
-                <p class="time"><span>{{item.createdAt}} {{item.createdAt | time}}</span></p>
-                <div class="main" :class="{ self: (item.send === this.user.id) }">
+                <p class="time"><span>{{item.date | time}}</span></p>
+                <div class="main" :class="{ self: (item.from === this.user.id) }">
                     <img class="avatar" width="30" height="30" :src="item | avatar" />
-                    <div class="text">{{item.text}}</div>
+                    <div class="text">{{item.msg}}</div>
                 </div>
             </li>
         </ul>
