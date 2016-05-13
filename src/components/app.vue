@@ -76,7 +76,10 @@
             show() {
                 this.isShow = true;
                 this.user = this.creatUser(this.currentUser);
-                store.loadUsers(this.currentUser, this.addUserList);
+                
+                var defer = jQuery.Deferred();
+                defer.done(store.loadUsers(this.currentUser, this.addUserList))
+                    .done(store.loadSession(this.currentUser, this.sessionCreateCB));
                 this.wsopen(this.sessionCreateCB);
             },
             hide() {
@@ -87,13 +90,13 @@
                 this.authVM.showLandingPage();
                 this.clearData();
             },
-            wsopen(currentUser, createCB) {
+            wsopen(createCB) {
                 this.subscription = SessionQuery.subscribe();
                 this.subscription.on('open', () => {
                     console.log('subscription opened');
                 });
                 this.subscription.on('create', (session) => {
-                    createCB(currentUser, session);
+                    createCB(session);
                 });
                 this.subscription.on('close', () => {
                     console.log('subscription closed');
@@ -110,9 +113,10 @@
                         from: session.get('from'),
                         to: session.get('to'),
                         msg: session.get('msg'),
-                        createAt: session.get('createAt')
+                        createAt: session.createAt
                     });
                 }
+                store.update(session);
             },
             regUser() {
                 store.saveGroupUser(this.currentUser);

@@ -15,7 +15,7 @@
                         break;
                     }
                 }
-                console.log(id1, id2, this.sessionIndex);
+                //console.log(id1, id2, this.sessionIndex);
                 if (this.sessionIndex == -1) {
                     this.sessionList.push({
                         id1: id1,

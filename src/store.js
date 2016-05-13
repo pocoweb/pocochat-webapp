@@ -30,14 +30,32 @@ export default {
     loadChat() {
         return JSON.parse(localStorage.getItem(KEY_CHAT));
     },
+    loadSession(user, callback) {
+        console.log('>>> loadSession')
+        var query = new Parse.Query(ParseSession);
+        query.equalTo('to', user.id);
+        query.equalTo('load', false);
+        query.find({
+            success: function(results) {
+                for (var i = 0; i < results.length; i++) {
+                    callback(results[i]);
+                }
+                console.log('<<< loadSession');
+            },
+            error: function(error) {
+                console.log("load session Error: " + error.code + " " + error.message);
+                console.log('<<< loadSession');
+            }
+        });
+    },
     loadUsers(user, callback) {
-        //默认，智能助手
-        loadUserByID(this.getAIId(), callback);
+        console.log('>>> loadUsers')
         
-        //默认，群聊
+        // default users
+        loadUserByID(this.getAIId(), callback);
         loadUserByID(this.getGroupId(), callback);
         
-        var query = new Parse.Query('GroupUsers');
+        var query = new Parse.Query(ParseGroupUsers);
         query.equalTo('group', user.get('group'));
         query.notEqualTo('uid', user.id);
         query.find({
@@ -47,9 +65,11 @@ export default {
                     //console.log('group users:', uid);
                     loadUserByID(uid, callback);
                 }
+                console.log('<<< loadUsers');
             },
             error: function(error) {
                 console.log("load group users Error: " + error.code + " " + error.message);
+                console.log('<<< loadUsers');
             }
         });
     },
@@ -58,6 +78,7 @@ export default {
     },
     send(tempSession) {
         var session = new ParseSession();
+        session.set('load', false);
         session.save(tempSession, {
             success: function(data) {
                 console.log('send session ok', data);
@@ -66,6 +87,10 @@ export default {
                 console.log('send session ng, with error code: ' + error.description);
             }
         });
+    },
+    update(tempSession) {
+        tempSession.set('load', true);
+        tempSession.save();
     },
     save(store) {
         localStorage.setItem(KEY_CHAT, JSON.stringify(store));
