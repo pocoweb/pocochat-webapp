@@ -7,6 +7,8 @@
     
     let SessionQuery = new Parse.Query('Messages');
     
+    var AppObj = null;
+    
     export default {
         el: '#chat',
         data () {
@@ -45,16 +47,6 @@
                 }
             }
         },
-        watch: {
-            sessionList: {
-                deep: true,
-                handler () {
-//                    store.save({
-//                        sessionList: this.sessionList
-//                    });
-                }
-            }
-        },
         components: {
             card, list, text, message
         },
@@ -74,12 +66,14 @@
                 this.subscription.unsubscribe();
             },
             show() {
-                this.isShow = true;
+                AppObj = this;
                 this.user = this.creatUser(this.currentUser);
-                
-                var defer = jQuery.Deferred();
-                defer.done(store.loadUsers(this.currentUser, this.addUserList))
-                    .done(store.loadSession(this.currentUser, this.sessionCreateCB));
+                this.sessionList = store.loadChat(this.user);
+                let promise = store.loadUsers(this.currentUser, this.addUserList);
+                promise.then(function() {
+                    store.loadSession(AppObj.currentUser, AppObj.sessionCreateCB);
+                    AppObj.isShow = true;
+                });   
                 this.wsopen(this.sessionCreateCB);
             },
             hide() {
@@ -103,20 +97,37 @@
                 });
             },
             sessionCreateCB(session) {
-                let userId1 = session.get('from'), userId2 = session.get('to');
-                if (this.user.id !== userId1 && this.user.id !== userId2) {
-                    return;
-                }
-                var index = this.selectSession(userId1, userId2);
-                if (index >= 0) {
+                let fromId = session.get('from'), toId = session.get('to');
+                if (toId === this.user.id) {
+                    var index = this.selectSession(fromId, toId);
+                    if (index < 0) return;
                     this.sessionList[index].messages.push({
-                        from: session.get('from'),
-                        to: session.get('to'),
+                        from: fromId,
+                        to: toId,
                         msg: session.get('msg'),
-                        createAt: session.createAt
+                        createdAt: session.createdAt
                     });
+                    store.save(this.user, this.sessionList, session.createdAt);
+                    
+                } else if (toId === store.getGroupId()) {
+                    let foundUser = this.userList.filter(item => item.id === fromId);
+                    if (foundUser.length <= 0) return;
+                    
+                    let otherUser = foundUser[0];
+                    var index = this.selectSession(this.user.id, toId);
+                    if (index < 0) return;
+                    
+                    this.sessionList[index].messages.push({
+                        from: otherUser.id,
+                        to: this.user.id,
+                        msg: session.get('msg'),
+                        createdAt: session.createdAt
+                    });
+                    store.save(this.user, this.sessionList, session.createdAt);
+                    
+                } else if (fromId === this.user.id) {
+                    store.save(this.user, this.sessionList, session.createdAt);
                 }
-                store.update(session);
             },
             regUser() {
                 store.saveGroupUser(this.currentUser);

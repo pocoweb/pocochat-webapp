@@ -11,8 +11,11 @@
         filters: {
             // 筛选出用户头像
             avatar (item) {
+                let otherId = (item.from === this.user.id) ? item.to : item.from;
+                let otherUser = this.userList.filter(item => item.id === otherId)[0];
+                
                 // 如果是自己发的消息显示登录用户的头像
-                let user = (item.from === this.user.id) ? this.user : this.sessionUser;
+                let user = (item.from === this.user.id) ? this.user : otherUser;
                 return user && user.avatar;
             },
             // 将日期过滤为 hour:minutes

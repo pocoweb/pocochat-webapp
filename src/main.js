@@ -31,7 +31,7 @@ appVm.authVM = new Vue({
             return this.pages.isShowSigninPage ? "登录PocoChat账号" : "注册PocoChat账号";
         },
         submitBtnStr() {
-            return this.pages.isShowSigninPage ? "登  录" : "注  册";
+            return this.pages.isShowSigninPage ? "登录" : "注册";
         }
     },
     methods: {
@@ -92,8 +92,8 @@ appVm.authVM = new Vue({
                 user.signUp(null, {
                     success: function(user) {
                         console.log("signup success", user);
-                        appVm.regUser();
                         appVm.currentUser = user;
+                        appVm.regUser();
                         appVm.authVM.showApp();
                     },
                     error: function(user, error) {
