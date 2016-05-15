@@ -25,10 +25,12 @@
         methods: {
             inputing (e) {
                 if (e.keyCode === 13 && this.text.length) { 
-                    if (this.text == '\n') {
-                        this.text = '';
+                    let text = this.text.replace(/[ \r\n]/g, "");
+                    if (text.length == 0) {
+                        this.text = text;
                         return;
                     }
+                    
                     var sendData = {
                         from: this.user.id,
                         to: this.session.id1 == this.user.id ? this.session.id2 : this.session.id1,

@@ -1,13 +1,7 @@
 <script>
     export default {
         props: ['session', 'user', 'userList'],
-        computed: {
-            sessionUser () {
-                var userId = (this.user.id === this.session.id1)?this.session.id2:this.session.id1;
-                let users = this.userList.filter(item => item.id === userId);
-                return users[0];
-            }
-        },
+
         filters: {
             // 筛选出用户头像
             avatar (item) {
