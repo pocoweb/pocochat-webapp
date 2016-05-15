@@ -33,13 +33,14 @@
     </style>
     <style> [v-cloak] { display: none; } </style>
     <link href="http://cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
+    <link href="http://cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
     <link href="dist/css/theme.css" rel="stylesheet">
 </head>
 <body>    
     <div v-cloak id="login-page">
         <div v-show="pages.isShowLandingPage">
             <div id="heading">
-                <div id="logo">Pocoweb Chat</div>
+                <div id="logo">PocoChat</div>
                 <div id="tagline">基于LUIS和Bing的人工智能团队协作IM</div>
                 <div id="btnrow">
                     <button v-on:click="signin" class="btn">登录</button>
@@ -77,7 +78,7 @@
                             <span class="warning warning-password text-center"></span>
                         </div>
                         <div class="login-input-group" v-show="pages.isShowSignupPage">
-                            <p class="input-title">组织：</p>
+                            <p class="input-title">团队名：</p>
                             <div class="input-fill">
                                 <input v-model.sync="group" type="text" name="password" class="username-signup password">
                             </div>
@@ -87,6 +88,21 @@
                     <div class="login-sub text-center">
                         <button class="btn btn-org-empty" id="login-btn" style="outline:0;" v-on:click="submit">{{submitBtnStr}}</button>
                     </div>  
+                    <div class="pro" v-show="pages.isShowSignupPage">
+                        <div class="agree text-center">
+                            注册账号，代表您同意 《<a href="/terms/sa" target="_blank" class="agreement">PocoChat服务协议</a>》
+                        </div>
+                    </div>
+                    <div class="text-center three">
+                        <div class="text-center three-title">
+                            <span class="line line-left"></span>
+                            <span class="or">or</span>
+                            <span class="line line-right"></span>
+                        </div>
+                        <div class="party-link">
+                            <button class="link icon"><i class="fa fa-github" aria-hidden="true"></i></button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
