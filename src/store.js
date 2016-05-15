@@ -2,8 +2,8 @@ const STORAGE_KEY = 'POCOWEB-CHAT-V1';
 const KEY_CHAT = STORAGE_KEY + '-CHAT';
 const KEY_TIME = STORAGE_KEY + '-TIME';
 
-Parse.initialize("pocowebchat", "njLwbUJgejKCjC2y");
-Parse.serverURL = 'http://pocoweb.com:11337/parse';
+Parse.initialize("pocoweb-chat", "njLwbUJgejKCjC2y");
+Parse.serverURL = 'http://localhost:1337/parse';
 
 var ParseSession = Parse.Object.extend('Messages');
 var ParseGroupUsers = Parse.Object.extend('GroupUsers');
