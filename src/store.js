@@ -2,11 +2,11 @@ const STORAGE_KEY = 'POCOWEB-CHAT-V1';
 const KEY_CHAT = STORAGE_KEY + '-CHAT';
 const KEY_TIME = STORAGE_KEY + '-TIME';
 
-Parse.initialize("pocowebchat", "njLwbUJgejKCjC2y");
-Parse.serverURL = 'http://pocoweb.com:11337/parse';
+Parse.initialize("pocoweb-chat", "njLwbUJgejKCjC2y");
+//Parse.serverURL = 'http://pocoweb.com:11337/parse';
+Parse.serverURL = 'http://localhost:1337/parse';
 
 var ParseSession = Parse.Object.extend('Messages');
-var ParseGroupUsers = Parse.Object.extend('GroupUsers');
 
 function loadUserByID(uid, callback) {
     var userQuery = new Parse.Query('User');
@@ -23,10 +23,10 @@ function loadUserByID(uid, callback) {
 
 export default {
     getAIId() {
-        return 'PhU3ki2QQV';
+        return '1E5T8KLWbF';// 'PhU3ki2QQV';
     },
     getGroupId() {
-        return '7SDMDWUPFh';
+        return 'qjm7IQwids';//'7SDMDWUPFh';
     },
     loadSession(user, callback) {
         console.log('>>> loadSession')
@@ -55,35 +55,35 @@ export default {
             }
         });
     },
-    loadUsers(user, callback) {
+    loadUsers(currentUser, callback) {
         console.log('>>> loadUsers')
-        
-        // default users
-        loadUserByID(this.getAIId(), callback);
-        loadUserByID(this.getGroupId(), callback);
-        
-        var query = new Parse.Query(ParseGroupUsers);
-        query.equalTo('group', user.get('group'));
-        query.notEqualTo('uid', user.id);
-        
+        var self = this;
         return new Promise(function(resolve, reject) {
-            query.find({
-                success: function(results) {
-                    for (var i = 0; i < results.length; i++) {
-                        var uid = results[i].get('uid');
-                        //console.log('group users:', uid);
-                        loadUserByID(uid, callback);
-                    }
-                    console.log('<<< query.find');
-                    resolve();
-                },
-                error: function(error) {
-                    console.log("load group users Error: " + error.code + " " + error.message);
-                    console.log('<<< query.find');
-                    reject();
+            var userQuery = new Parse.Query('User');
+            userQuery.get(self.getAIId()).then(function(user) {
+                callback(user);
+                console.log('got ai');
+                return userQuery.get(self.getGroupId());
+                
+            }).then(function(user) {
+                callback(user);
+                console.log('got group');
+                
+                var query = new Parse.Query('User');
+                query.equalTo('group', currentUser.get('group'));
+                query.notEqualTo('ObjectId', currentUser.id);
+                return query.find();
+                
+            }).then(function(users) {
+                for (var i = 0; i < users.length; i++) {
+                    callback(users[i]);
                 }
+                console.log('<<< query users ok', users);
+                resolve();
+            }, function(error) {
+                console.log('<<< query users ng', error);
+                reject();
             });
-            
         }); 
     },
     loadMe(parseUser) {
@@ -121,18 +121,5 @@ export default {
     save(user, data, updateTime) {
         localStorage.setItem(KEY_CHAT + user.id, JSON.stringify(data));
         localStorage.setItem(KEY_TIME + user.id, JSON.stringify(updateTime));
-    },
-    saveGroupUser(parseUser) {
-        var groupUser = new ParseGroupUsers();
-        groupUser.set('group', parseUser.get('group'));
-        groupUser.set('uid', parseUser.id);
-        groupUser.save(null, {
-            success: function(data) {
-                console.log('saveGroupUser ok', data);
-            },
-            error: function(data, error) {
-                console.log('saveGroupUser ng, with error code: ' + error.description);
-            }
-        });
     }
 };
