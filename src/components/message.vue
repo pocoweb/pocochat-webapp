@@ -21,6 +21,9 @@
                     date = new Date(date);
                 }
                 return date.getHours() + ':' + date.getMinutes();
+            },
+            linkify (text) {
+                return text.linkify();
             }
         },
         directives: {
@@ -41,7 +44,7 @@
                 <p class="time"><span>{{item.createdAt | time}}</span></p>
                 <div class="main" :class="{ self: (item.from === this.user.id) }">
                     <img class="avatar" width="30" height="30" :src="item | avatar" />
-                    <div class="text">{{item.msg}}</div>
+                    <div class="text"><div class="html">{{item.msg | linkify}} </div></div>
                 </div>
             </li>
         </ul>
@@ -95,6 +98,9 @@
                 border: 6px solid transparent;
                 border-right-color: #fafafa;
             }
+        }
+        .text div {
+            white-space: pre-wrap;
         }
         
         .self {
