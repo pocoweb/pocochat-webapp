@@ -7,8 +7,6 @@
     
     let SessionQuery = new Parse.Query('Messages');
     
-    var AppObj = null;
-    
     export default {
         el: '#chat',
         data () {
@@ -66,13 +64,13 @@
                 this.subscription.unsubscribe();
             },
             show() {
-                AppObj = this;
+                var self = this;
                 this.user = this.creatUser(this.currentUser);
                 this.sessionList = store.loadChat(this.user);
                 let promise = store.loadUsers(this.currentUser, this.addUserList);
                 promise.then(function() {
-                    store.loadSession(AppObj.currentUser, AppObj.sessionCreateCB);
-                    AppObj.isShow = true;
+                    store.loadSession(self.currentUser, self.sessionCreateCB);
+                    self.isShow = true;
                 });   
                 this.wsopen(this.sessionCreateCB);
             },
@@ -128,9 +126,6 @@
                 } else if (fromId === this.user.id) {
                     store.save(this.user, this.sessionList, session.createdAt);
                 }
-            },
-            regUser() {
-                store.saveGroupUser(this.currentUser);
             },
             creatUser(parseUser) {
                 if (parseUser != null) {
