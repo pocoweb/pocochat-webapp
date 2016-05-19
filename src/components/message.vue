@@ -10,7 +10,7 @@
                 
                 // 如果是自己发的消息显示登录用户的头像
                 let user = (item.from === this.user.id) ? this.user : otherUser;
-                return user && user.avatar;
+                return user && $.avatar({name: user.name});
             },
             // 将日期过滤为 hour:minutes
             time (date) {
