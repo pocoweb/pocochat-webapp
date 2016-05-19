@@ -29,10 +29,10 @@
         filters: {
             search (list) {
                 return list.filter(item => item.name.indexOf(this.search) > -1);
+            },
+            avatar (user) {
+                return $.avatar({name:user.name});
             }
-        },
-        created: function() {
-
         }
     };
 </script>
@@ -41,7 +41,7 @@
     <div class="m-list">
         <ul>
             <li v-for="item in userList | search" :class="{ active: (session.id1 === item.id) || (session.id2 === item.id) }" @click="select(item)">
-                <img class="avatar"  width="40" height="40" :alt="item.name" :src="item.avatar">
+                <img class="avatar"  width="40" height="40" :alt="item.name" :src="item | avatar">
                 <p class="name">{{item.name}}</p>
             </li>
         </ul>

@@ -5,6 +5,11 @@
             signOut: function() {
                 this.$parent.signout();
             }
+        },
+        filters: {
+            avatar (user) {
+                return $.avatar({name:user.name});
+            }
         }
     };
 </script>
@@ -12,7 +17,7 @@
 <template>
     <div class="m-card">
         <header>
-            <img class="avatar" width="50" height="50" :alt.sync="user.name" :src.sync="user.avatar">
+            <img class="avatar" width="50" height="50" :alt.sync="user.name" :src="user | avatar">
             <p class="name">{{user.name}}</p>
             <button class="btn btn-xs signout" type="button" @click="signOut()">登出</button>
         </header>
