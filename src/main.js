@@ -59,6 +59,7 @@ appVm.authVM = new Vue({
             this.reset();
             this.pages.isShowSigninPage = true;
         },
+
         signup() {
             console.log('signup');
             this.reset();

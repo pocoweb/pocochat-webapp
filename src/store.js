@@ -3,8 +3,8 @@ const KEY_CHAT = STORAGE_KEY + '-CHAT';
 const KEY_TIME = STORAGE_KEY + '-TIME';
 
 Parse.initialize("pocoweb-chat", "njLwbUJgejKCjC2y");
-//Parse.serverURL = 'http://pocoweb.com:11337/parse';
-Parse.serverURL = 'http://localhost:1337/parse';
+Parse.serverURL = 'http://pocoweb.com:11337/parse';
+//Parse.serverURL = 'http://localhost:1337/parse';
 
 var ParseSession = Parse.Object.extend('Messages');
 
@@ -23,10 +23,12 @@ function loadUserByID(uid, callback) {
 
 export default {
     getAIId() {
-        return '1E5T8KLWbF';// 'PhU3ki2QQV';
+        return 'PhU3ki2QQV'; //release
+        //return '1E5T8KLWbF'; //debug
     },
     getGroupId() {
-        return 'qjm7IQwids';//'7SDMDWUPFh';
+        return '7SDMDWUPFh'; //release
+        //return 'qjm7IQwids'; //debug
     },
     loadSession(user, callback) {
         console.log('>>> loadSession')

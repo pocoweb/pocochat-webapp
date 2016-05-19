@@ -100,7 +100,8 @@
                             <span class="line line-right"></span>
                         </div>
                         <div class="party-link">
-                            <button class="link icon"><i class="fa fa-github" aria-hidden="true"></i></button>
+                            <button class="link icon"><i class="fa fa-github" aria-hidden="true" onclick="github_login()"></i></button>
+                            <div id="profile_github">test</div>
                         </div>
                     </div>
                 </div>
@@ -109,9 +110,38 @@
     </div>   
     
     <div v-cloak id="chat" v-show="isShow"></div>
+
+    <script src="//cdn.bootcss.com/hellojs/1.13.1/hello.all.min.js"></script>
     <script src="dist/vue.js"></script>
     <script src="dist/parse-1.8.3.min.js"></script>
     <script src="dist/main.js"></script>
+
+    <script>
+
+        function github_login() {
+            hello('github').login({
+                response_type: 'code'
+            }).then(function(user) {
+                console.log(user);
+                console.log('You are signed in to github');
+                hello('github').api('/me').then(function(r) {
+                    // Inject it into the container
+                    alert("Hey - " + r.name + " - " + r.email);
+                });
+            }, function(e) {
+                alert('Signin error: ' + e.error.message);
+            });
+        }
+
+        hello.init({
+            github: "90b3f6ed4f34d5c8d1cf"
+        }, {
+            oauth_proxy: 'http://localhost:1337/oauthproxy',
+        });
+
+
+
+    </script>
 
 </body>
 </html>
