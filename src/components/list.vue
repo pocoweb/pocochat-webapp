@@ -2,10 +2,16 @@
     export default {
         props: ['userList', 'sessionList', 'user', 'sessionIndex', 'session', 'search'],
 
+        computed: {
+            withUserList () {
+                return this.sessionList.filter(item => (item.id1 != this.user.id || item.id2 != this.user.id));
+            }
+        },
+
         methods: {
-            select (value) {
-                let id1 = value.id < this.user.id ? value.id : this.user.id;
-                let id2 = value.id > this.user.id ? value.id : this.user.id;
+            selectSession (value) {
+                var id1 = value.id1;
+                var id2 = value.id2;
                 
                 this.sessionIndex = -1;
                 for (var i=0; i<this.sessionList.length; i++) {
@@ -30,8 +36,23 @@
             search (list) {
                 return list.filter(item => item.name.indexOf(this.search) > -1);
             },
-            avatar (user) {
-                return $.avatar({name:user.name});
+            withUserName (session) {
+                var withUserId = session.id1 == this.user.id ? session.id2 : session.id1;
+                var withUser = this.userList.filter(item => item.id == withUserId)[0];
+                if (withUser){
+                    return withUser.name;
+                }            },
+            withUserAvatar (session) {
+                var withUserId = session.id1 == this.user.id ? session.id2 : session.id1;
+                var withUser = this.userList.filter(item => item.id == withUserId)[0];
+                if (withUser){
+                    return $.avatar({name: withUser.name});
+                }
+            },
+            unread (messages) {
+                
+                return messages.length;
+                
             }
         }
     };
@@ -40,9 +61,9 @@
 <template>
     <div class="m-list">
         <ul>
-            <li v-for="item in userList | search" :class="{ active: (session.id1 === item.id) || (session.id2 === item.id) }" @click="select(item)">
-                <img class="avatar"  width="40" height="40" :alt="item.name" :src="item | avatar">
-                <p class="name">{{item.name}}</p>
+            <li v-for="item in withUserList" :class="{ active: (item == sessionList[sessionIndex]) }" @click="selectSession(item)">
+                <img class="avatar"  width="40" height="40" :alt="item | withUserName" :src="item | withUserAvatar">
+                <p class="name">{{item | withUserName}} ({{item.messages | unread}})</p>
             </li>
         </ul>
     </div>
