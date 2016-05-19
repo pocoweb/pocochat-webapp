@@ -77,7 +77,7 @@
         .text {
             display: inline-block;
             position: relative;
-            padding: 0 10px;
+            padding: 5px 10px;
             max-width: ~'calc(55% - 40px)';
             min-height: 30px;
             line-height: 1.75;
