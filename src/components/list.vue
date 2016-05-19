@@ -34,14 +34,21 @@
         },
         filters: {
             search (list) {
-                return list.filter(item => item.name.indexOf(this.search) > -1);
+                var that = this;
+                function findUser(session) {
+                    var withUserId = session.id1 == that.user.id ? session.id2 : session.id1;
+                    var withUser = that.userList.filter(item => item.id == withUserId)[0];
+                    return withUser && withUser.name.indexOf(that.search) > -1;
+                }
+                return list.filter(item => findUser(item));
             },
             withUserName (session) {
                 var withUserId = session.id1 == this.user.id ? session.id2 : session.id1;
                 var withUser = this.userList.filter(item => item.id == withUserId)[0];
                 if (withUser){
                     return withUser.name;
-                }            },
+                }            
+            },
             withUserAvatar (session) {
                 var withUserId = session.id1 == this.user.id ? session.id2 : session.id1;
                 var withUser = this.userList.filter(item => item.id == withUserId)[0];
@@ -61,7 +68,7 @@
 <template>
     <div class="m-list">
         <ul>
-            <li v-for="item in withUserList" :class="{ active: (item == sessionList[sessionIndex]) }" @click="selectSession(item)">
+            <li v-for="item in withUserList | search" :class="{ active: (item == sessionList[sessionIndex]) }" @click="selectSession(item)">
                 <img class="avatar"  width="40" height="40" :alt="item | withUserName" :src="item | withUserAvatar">
                 <p class="name">{{item | withUserName}} ({{item.messages | unread}})</p>
             </li>
