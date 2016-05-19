@@ -23,31 +23,42 @@
             };
         },
         methods: {
-            inputing (e) {
-                if (e.keyCode === 13 && this.text.length) { 
-                    let text = this.text.replace(/[ \r\n]/g, "");
-                    if (text.length == 0) {
-                        this.text = text;
-                        return;
+            inputing (event) {
+                var tempText = this.text.trim();
+                if (!event.shiftKey) {
+                    if (tempText.length) { 
+                        var sendData = {
+                            from: this.user.id,
+                            to: this.session.id1 == this.user.id ? this.session.id2 : this.session.id1,
+                            msg: tempText
+                        }
+                        this.session.messages.push(sendData);
+                        store.send(sendData);
+                        this.text = "";  // after sent -> empty
+                    } else {
+                        this.text = "";  // all whitespace/newline -> empty
                     }
-                    
-                    var sendData = {
-                        from: this.user.id,
-                        to: this.session.id1 == this.user.id ? this.session.id2 : this.session.id1,
-                        msg: this.text
-                    }
-                    this.session.messages.push(sendData);
-                    store.send(sendData);
-                    this.text = '';
+                } else {
+                    // enter + shift -> break a new line
+                    this.text += "\r\n";
                 }
-            }
+            },
+            validateEnter (event) {
+                console.log("enter shift");
+                var tempText = this.text.trim();
+                if (!event.shiftKey) {
+                    if (!tempText.length) { 
+                        this.text = "";  // enter with no text -> empty
+                    } 
+                } 
+            },
         }
     };
 </script>
 
 <template>
     <div class="m-text">
-        <textarea placeholder="按 Enter 发送" v-model="text" @keyup="inputing"></textarea>
+        <textarea placeholder="按 Enter 发送" v-model="text" @keydown.enter.prevent="validateEnter" @keyup.enter.prevent="inputing($event)"></textarea>
     </div>
 </template>
 
