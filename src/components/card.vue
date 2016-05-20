@@ -60,4 +60,20 @@
             background-color: #26292E;
         }
     }
+    @media screen and (max-width:480px) {
+        .m-card {
+            .avatar {
+                margin-top: 15px;
+            }
+            .name {
+                display: none;
+            }
+            .search {
+                display: none;
+            }
+            .signout {
+                display: none;
+            }
+        }
+    }
 </style>

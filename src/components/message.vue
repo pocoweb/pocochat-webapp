@@ -122,4 +122,18 @@
             }
         }
     }
+    @media screen and (max-width:767px) {
+        .m-message {
+            .text {
+                max-width: ~'calc(80% - 40px)';
+            }
+        }
+    }
+    @media screen and (max-width:480px) {
+        .m-message {
+            .text {
+                max-width: ~'calc(85% - 40px)';
+            }
+        }
+    }
 </style>

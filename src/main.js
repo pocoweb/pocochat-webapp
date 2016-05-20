@@ -1,4 +1,5 @@
 import app from './components/app';
+import Login from './login';
 
 Vue.config.debug = true;
 var appVm = new Vue(app);
@@ -13,7 +14,8 @@ appVm.authVM = new Vue({
         },
         username: '',
         password: '',
-        group: ''
+        group: '',
+        email: ''
     },
     $vm: this,
     // TODO(liwen): try to avoid create the model if the user has signed in.
@@ -53,13 +55,14 @@ appVm.authVM = new Vue({
         clearAuthForm() {
             this.username = '';
             this.password = '';
+            this.group = '';
+            this.email = '';
         },
         signin() {
             console.log('signin');            
             this.reset();
             this.pages.isShowSigninPage = true;
         },
-
         signup() {
             console.log('signup');
             this.reset();
@@ -81,14 +84,18 @@ appVm.authVM = new Vue({
                         appVm.authVM.showApp();
                     },
                     error: function(user, error) {
-                        console.log("Error: " + error.code + " " + error.message + "."); 
+                        console.log("Error: " + error.code + " " + error.message + ".");
+                        //TODO: add error case
                     }
                 });
                 
             } else if (this.pages.isShowSignupPage) {
+                //TODO: add check
+                
                 var user = new Parse.User();
                 user.set('username', this.username);
                 user.set('password', this.password);
+                user.set('email', this.email);
                 user.set('group', this.group);
                 user.signUp(null, {
                     success: function(user) {
@@ -98,6 +105,7 @@ appVm.authVM = new Vue({
                     },
                     error: function(user, error) {
                         console.log("Error: " + error.code + " " + error.message + ".");
+                        //TODO: add error case
                     }
                 });
             }  

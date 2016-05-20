@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Pocoweb Chat</title>
+    <title>PocoChat</title>
     <style>
         *, *:before, *:after {
             box-sizing: border-box;
@@ -66,6 +66,13 @@
                             </div>
                             <span class="warning text-center"></span>
                         </div>
+                        <div class="login-input-group" v-show="pages.isShowSignupPage">
+                            <p class="input-title">邮箱：</p>
+                            <div class="input-fill">
+                                <input v-model.sync="email" type="email" name="password" class="username-signup password">
+                            </div>
+                            <span class="warning warning-password text-center"></span>
+                        </div>
                         <div class="login-input-group">
                             <p class="input-title">密码：
                                 <!--
@@ -78,7 +85,9 @@
                             <span class="warning warning-password text-center"></span>
                         </div>
                         <div class="login-input-group" v-show="pages.isShowSignupPage">
-                            <p class="input-title">团队名：</p>
+                            <p class="input-title">团队名：
+                                <span class="signup">同一个团队用户自动进入同一群聊</span>
+                            </p>
                             <div class="input-fill">
                                 <input v-model.sync="group" type="text" name="password" class="username-signup password">
                             </div>
@@ -88,11 +97,14 @@
                     <div class="login-sub text-center">
                         <button class="btn btn-org-empty" id="login-btn" style="outline:0;" v-on:click="submit">{{submitBtnStr}}</button>
                     </div>  
+<!--
                     <div class="pro" v-show="pages.isShowSignupPage">
                         <div class="agree text-center">
-                            注册账号，代表您同意 《<a href="/terms/sa" target="_blank" class="agreement">PocoChat服务协议</a>》
+                            注册账号，代表您同意 《<a target="_blank" class="agreement">PocoChat服务协议</a>》
                         </div>
                     </div>
+-->
+<!--
                     <div class="text-center three">
                         <div class="text-center three-title">
                             <span class="line line-left"></span>
@@ -103,6 +115,8 @@
                             <button class="link icon"><i class="fa fa-github" aria-hidden="true" onclick="github_login()"></i></button>
                         </div>
                     </div>
+-->
+                    <br>
                 </div>
             </div>
         </div>

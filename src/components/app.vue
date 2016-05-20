@@ -119,7 +119,7 @@
                     var fromUser = this.userList.filter(item => (item.id === message.from));
                     console.log('from', fromUser);
                     fromUser = fromUser[0];
-                    doNotify('PocoChat', fromUser.name+'：'+message.msg, fromUser.avatar);
+                    doNotify('PocoChat - '+this.user.name, fromUser.name+'：'+message.msg, fromUser.avatar);
                 }
             },
             sessionCreateCB(session) {
@@ -250,6 +250,14 @@
     @media screen and (max-width:767px) {
         #chat {
             width: 600px;
+        }
+    }
+    @media screen and (max-width:480px) {
+        #chat {
+            width: 400px;
+            .sidebar {
+                width: 90px;
+            }
         }
     }
 </style>

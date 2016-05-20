@@ -110,11 +110,23 @@
             text-align: center;
             color: orangered;
             font-weight: 600;
+            padding: 0;
+            margin: 0;
 /*
             font-size: 5px;
             background-color:#F00; 
             border-radius: 10px;
 */
+        }
+    }
+    @media screen and (max-width:480px) {
+        .m-list {
+            li {
+                padding: 12px 15px;
+            }
+            .name {
+                display: none;
+            }
         }
     }
 </style>
