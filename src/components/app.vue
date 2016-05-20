@@ -7,7 +7,7 @@
     
     let SessionQuery = new Parse.Query('Messages');
     
-    function doNotify(inTitle, inBody, inSilent, inIcon) {
+    function doNotify(inTitle, inBody, inIcon) {
         Notification.requestPermission();
         var option = {
             title: inTitle,
@@ -115,6 +115,12 @@
                 if (index !== this.sessionIndex) {
                     session.unread++;
                 }
+                if (message.notify === true) {
+                    var fromUser = this.userList.filter(item => (item.id === message.from));
+                    console.log('from', fromUser);
+                    fromUser = fromUser[0];
+                    doNotify('PocoChat', fromUser.name+'：'+message.msg, fromUser.avatar);
+                }
             },
             sessionCreateCB(session) {
                 let fromId = session.get('from'), toId = session.get('to');
@@ -123,6 +129,7 @@
                         from: fromId,
                         to: toId,
                         msg: session.get('msg'),
+                        notify: session.get('notify'),
                         createdAt: session.createdAt
                     });
                     store.save(this.user, this.sessionList, session.createdAt);
@@ -136,6 +143,7 @@
                         from: otherUser.id,
                         to: this.user.id,
                         msg: session.get('msg'),
+                        notify: session.get('notify'),
                         createdAt: session.createdAt
                     });
                     store.save(this.user, this.sessionList, session.createdAt);
