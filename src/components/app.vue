@@ -7,6 +7,19 @@
     
     let SessionQuery = new Parse.Query('Messages');
     
+    function doNotify(inTitle, inBody, inSilent, inIcon) {
+        Notification.requestPermission();
+        var option = {
+            title: inTitle,
+            body: inBody,
+            icon: inIcon
+        }
+        var noti = new Notification(option.title, option);
+        noti.onclick = function () {
+            console.log('Notification clicked')
+        }
+    }
+    
     export default {
         el: '#chat',
         data () {
@@ -41,6 +54,7 @@
                 return {
                     id1: '',
                     id2: '',
+                    unread: 0,
                     messages: []
                 }
             }
@@ -94,12 +108,18 @@
                     console.log('subscription closed');
                 });
             },
+            addMessage(index, message) {
+                if (index < 0) return;
+                var session = this.sessionList[index];
+                session.messages.push(message);
+                if (index !== this.sessionIndex) {
+                    session.unread++;
+                }
+            },
             sessionCreateCB(session) {
                 let fromId = session.get('from'), toId = session.get('to');
                 if (toId === this.user.id) {
-                    var index = this.selectSession(fromId, toId);
-                    if (index < 0) return;
-                    this.sessionList[index].messages.push({
+                    this.addMessage(this.selectSession(fromId, toId), {
                         from: fromId,
                         to: toId,
                         msg: session.get('msg'),
@@ -112,10 +132,7 @@
                     if (foundUser.length <= 0) return;
                     
                     let otherUser = foundUser[0];
-                    var index = this.selectSession(this.user.id, toId);
-                    if (index < 0) return;
-                    
-                    this.sessionList[index].messages.push({
+                    this.addMessage(this.selectSession(this.user.id, toId), {
                         from: otherUser.id,
                         to: this.user.id,
                         msg: session.get('msg'),
@@ -157,6 +174,7 @@
                     this.sessionList.push({
                         id1: id1,
                         id2: id2,
+                        unread: 0,
                         messages: []                       
                     });
                 }

@@ -21,15 +21,21 @@
                         break;
                     }
                 }
-                //console.log(id1, id2, this.sessionIndex);
+                //console.log('selectSession ok', id1, id2, this.sessionIndex);
                 if (this.sessionIndex == -1) {
                     this.sessionList.push({
                         id1: id1,
                         id2: id2,
+                        unread: 0,
                         messages: []
                     });
                     this.sessionIndex = this.sessionList.length - 1;
                 }
+                
+                this.sessionList[this.sessionIndex].unread = 0;
+            },
+            unread (session) {
+                return session.unread > 0 ? '('+session.unread+')' : '';
             }
         },
         filters: {
@@ -55,11 +61,6 @@
                 if (withUser){
                     return $.avatar({name: withUser.name});
                 }
-            },
-            unread (messages) {
-                
-                return messages.length;
-                
             }
         }
     };
@@ -70,7 +71,8 @@
         <ul>
             <li v-for="item in withUserList | search" :class="{ active: (item == sessionList[sessionIndex]) }" @click="selectSession(item)">
                 <img class="avatar"  width="40" height="40" :alt="item | withUserName" :src="item | withUserAvatar">
-                <p class="name">{{item | withUserName}} ({{item.messages | unread}})</p>
+                <p class="name">{{item | withUserName}}</p>
+                <p class="flag">{{unread(item)}}</p>
             </li>
         </ul>
     </div>
@@ -100,6 +102,18 @@
         .name {
             display: inline-block;
             margin: 0 0 0 15px;
+            width: 50%;
+        }
+        .flag {
+            display: inline-block;
+            text-align: center;
+            color: orangered;
+            font-weight: 600;
+/*
+            font-size: 5px;
+            background-color:#F00; 
+            border-radius: 10px;
+*/
         }
     }
 </style>

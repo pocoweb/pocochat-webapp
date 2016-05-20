@@ -1,18 +1,5 @@
 <script>
     import store from '../store';
-
-    function doNotify(inTitle, inBody, inSilent, inIcon) {
-        Notification.requestPermission();
-        var option = {
-            title: inTitle,
-            body: inBody,
-            icon: inIcon
-        }
-        var noti = new Notification(option.title, option);
-        noti.onclick = function () {
-            console.log('Notification clicked')
-        }
-    }
     
     export default {
         self: this,

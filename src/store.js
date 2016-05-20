@@ -2,7 +2,7 @@ const STORAGE_KEY = 'POCOWEB-CHAT-V1';
 const KEY_CHAT = STORAGE_KEY + '-CHAT';
 const KEY_TIME = STORAGE_KEY + '-TIME';
 
-var L_IS_DEBUG = false;
+var L_IS_DEBUG = true;
 
 Parse.initialize("pocoweb-chat", "njLwbUJgejKCjC2y");
 
@@ -120,6 +120,8 @@ export default {
         tempSession.save();
     },
     loadChat(user) {
+        return [];
+        
         let value = localStorage.getItem(KEY_CHAT + user.id);
         return (value!=null && value!='undefined') ? JSON.parse(value) : [];
     },
@@ -133,7 +135,7 @@ export default {
         return value;
     },
     save(user, data, updateTime) {
-        localStorage.setItem(KEY_CHAT + user.id, JSON.stringify(data));
+        //localStorage.setItem(KEY_CHAT + user.id, JSON.stringify(data));
         localStorage.setItem(KEY_TIME + user.id, JSON.stringify(updateTime));
     }
 };
