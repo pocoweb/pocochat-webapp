@@ -2,14 +2,14 @@ const STORAGE_KEY = 'POCOWEB-CHAT-V1';
 const KEY_CHAT = STORAGE_KEY + '-CHAT';
 const KEY_TIME = STORAGE_KEY + '-TIME';
 
-var L_IS_DEBUG = true;
+var L_IS_DEBUG = false;
 
 Parse.initialize("pocoweb-chat", "njLwbUJgejKCjC2y");
 
 if (L_IS_DEBUG) {
     Parse.serverURL = 'http://localhost:1337/parse';
 } else {
-    Parse.serverURL = 'http://pocoweb.com:11337/parse';
+    Parse.serverURL = 'http://azure.pocoweb.com:11337/parse';
 }
 
 var ParseSession = Parse.Object.extend('Messages');
@@ -31,16 +31,16 @@ export default {
     getAIId() {
         if (L_IS_DEBUG) {
             return '1E5T8KLWbF';//change this to your local id
-				} else {
-            return 'PhU3ki2QQV';
-				}
+        } else {
+            return 'kEuEOeRLL8';
+        }
     },
     getGroupId() {
-		    if (L_IS_DEBUG) {
+        if (L_IS_DEBUG) {
             return 'qjm7IQwids';//change this to your local id
-				} else {
-            return '7SDMDWUPFh';
-				}
+        } else {
+            return 'rtJkLAuZU9';
+        }
     },
     loadSession(user, callback) {
         console.log('>>> loadSession')
@@ -96,7 +96,7 @@ export default {
                 resolve();
             }, function(error) {
                 console.log('<<< query users ng', error);
-                reject();
+                resolve();
             });
         }); 
     },
