@@ -154,14 +154,10 @@
             },
             creatUser(parseUser) {
                 if (parseUser != null) {
-                    var avatar = parseUser.get('avatar');
-                    if (avatar ==  null) {
-                        avatar = 'dist/images/unknown.jpg';
-                    }
                     return {
                         'id': parseUser.id,
                         'name': parseUser.get('username'),
-                        'avatar': avatar
+                        'avatar': parseUser.get('avatar')
                     }
                 } else {
                     return {

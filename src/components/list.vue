@@ -59,6 +59,7 @@
                 var withUserId = session.id1 == this.user.id ? session.id2 : session.id1;
                 var withUser = this.userList.filter(item => item.id == withUserId)[0];
                 if (withUser){
+                    //return withUser.avatar != null ? withUser.avatar : $.avatar({name: withUser.name});
                     return $.avatar({name: withUser.name});
                 }
             }
