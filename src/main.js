@@ -1,5 +1,6 @@
 import app from './components/app';
 import Login from './login';
+import Store from './store';
 
 Vue.config.debug = true;
 var appVm = new Vue(app);
@@ -91,17 +92,17 @@ appVm.authVM = new Vue({
                 
             } else if (this.pages.isShowSignupPage) {
                 //TODO: add check
-                
+                var email = this.email;
                 var user = new Parse.User();
                 user.set('username', this.username);
                 user.set('password', this.password);
-                user.set('email', this.email);
                 user.set('group', this.group);
                 user.signUp(null, {
                     success: function(user) {
                         console.log("signup success", user);
                         appVm.currentUser = user;
                         appVm.authVM.showApp();
+                        Store.setUserInfo(user, email);
                     },
                     error: function(user, error) {
                         console.log("Error: " + error.code + " " + error.message + ".");

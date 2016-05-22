@@ -24,6 +24,12 @@
             },
             linkify (text) {
                 return text.linkify();
+            },
+            marked (text) {
+                if (text.length > 10 && text.substr(0, 8) == "##md##\r\n") {
+                    return marked(text.substr(9));
+                }
+                return text;
             }
         },
         directives: {
@@ -44,7 +50,7 @@
                 <p class="time"><span>{{item.createdAt | time}}</span></p>
                 <div class="main" :class="{ self: (item.from === this.user.id) }">
                     <img class="avatar" width="30" height="30" :src="item | avatar" />
-                    <div class="text"><div class="html">{{item.msg | linkify}} </div></div>
+                    <div class="text"><div class="html">{{{item.msg | marked}}}</div></div>
                 </div>
             </li>
         </ul>

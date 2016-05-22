@@ -13,6 +13,7 @@ if (L_IS_DEBUG) {
 }
 
 var ParseSession = Parse.Object.extend('Messages');
+var ParseEmail = Parse.Object.extend('UserEmails');
 
 function loadUserByID(uid, callback) {
     var userQuery = new Parse.Query('User');
@@ -112,6 +113,23 @@ export default {
             },
             error: function(data, error) {
                 console.log('send session ng, with error code: ' + error.description);
+            }
+        });
+    },
+    setUserInfo(user, email) {
+        console.log('set email', email);
+        var parse = new ParseEmail();
+        parse.setACL(new Parse.ACL(user));
+        parse.save({
+            uid: user.id,
+            username: user.get('username'),
+            email: email
+        }, {
+            success: function(data) {
+                console.log('set email ok', data);
+            },
+            error: function(data, error) {
+                console.log('set email ng, with error code: ' + error.description);
             }
         });
     },
