@@ -72,7 +72,8 @@
                 display: none;
             }
             .signout {
-                display: none;
+                margin: 10px 0 0 8px;
+                display: block;
             }
         }
     }
