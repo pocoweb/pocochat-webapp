@@ -2,7 +2,7 @@ const STORAGE_KEY = 'POCOWEB-CHAT-V1';
 const KEY_CHAT = STORAGE_KEY + '-CHAT';
 const KEY_TIME = STORAGE_KEY + '-TIME';
 
-var L_IS_DEBUG = false;
+var L_IS_DEBUG = true;
 
 Parse.initialize("pocoweb-chat", "njLwbUJgejKCjC2y");
 
@@ -28,20 +28,15 @@ function loadUserByID(uid, callback) {
     });
 }
 
+var ID_AI = null;
+var ID_GROUP = null;
+
 export default {
     getAIId() {
-        if (L_IS_DEBUG) {
-            return '1E5T8KLWbF';//change this to your local id
-        } else {
-            return 'kEuEOeRLL8';
-        }
+        return ID_AI;
     },
     getGroupId() {
-        if (L_IS_DEBUG) {
-            return 'qjm7IQwids';//change this to your local id
-        } else {
-            return 'rtJkLAuZU9';
-        }
+        return ID_GROUP;
     },
     loadSession(user, callback) {
         console.log('>>> loadSession')
@@ -73,16 +68,25 @@ export default {
     loadUsers(currentUser, callback) {
         console.log('>>> loadUsers')
         var self = this;
-        return new Promise(function(resolve, reject) {
+        return new Promise(function(resolve, reject) {      
             var userQuery = new Parse.Query('User');
-            userQuery.get(self.getAIId()).then(function(user) {
-                callback(user);
-                console.log('got ai');
-                return userQuery.get(self.getGroupId());
+            userQuery.equalTo('username', '智能助手');
+            userQuery.find().then(function(users) {
+                if (users.length == 1) {
+                    ID_AI = users[0].id;
+                    callback(users[0]);
+                    console.log('got ai');
+                }
                 
-            }).then(function(user) {
-                callback(user);
-                console.log('got group');
+                userQuery = new Parse.Query('User');
+                userQuery.equalTo('username', '团队群聊');
+                return userQuery.find();
+            }).then(function(users) {
+                if (users.length == 1) {
+                    ID_GROUP = users[0].id;
+                    callback(users[0]);
+                    console.log('got group');
+                }
                 
                 var query = new Parse.Query('User');
                 query.equalTo('group', currentUser.get('group'));
@@ -139,9 +143,8 @@ export default {
     },
     loadChat(user) {
         return [];
-        
-        let value = localStorage.getItem(KEY_CHAT + user.id);
-        return (value!=null && value!='undefined') ? JSON.parse(value) : [];
+        // let value = localStorage.getItem(KEY_CHAT + user.id);
+        // return (value!=null && value!='undefined') ? JSON.parse(value) : [];
     },
     loadTime(user) {
         let value = localStorage.getItem(KEY_TIME + user.id);

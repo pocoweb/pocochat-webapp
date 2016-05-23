@@ -66,9 +66,9 @@
             clearData() {
                 this.currentUser = null;
                 this.user = {
-                    'id': -1,
-                    'name': '未登陆',
-                    'avatar': 'dist/images/unknown.jpg'
+                    id: -1,
+                    name: '未登陆',
+                    avatar: 'dist/images/unknown.jpg'
                 };
                 this.userList = [];
                 this.sessionList = [];
@@ -155,15 +155,17 @@
             creatUser(parseUser) {
                 if (parseUser != null) {
                     return {
-                        'id': parseUser.id,
-                        'name': parseUser.get('username'),
-                        'avatar': parseUser.get('avatar')
+                        id: parseUser.id,
+                        name: parseUser.get('username'),
+                        avatar: parseUser.get('avatar'),
+                        group: parseUser.get('group')
                     }
                 } else {
                     return {
-                        'id': -1,
-                        'name': '未登陆用户',
-                        'avatar': 'dist/images/unknown.jpg'
+                        id: -1,
+                        name: '未登陆用户',
+                        avatar: 'dist/images/unknown.jpg',
+                        group: ''
                     }
                 }
             },
