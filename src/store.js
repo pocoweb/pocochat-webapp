@@ -2,7 +2,7 @@ const STORAGE_KEY = 'POCOWEB-CHAT-V1';
 const KEY_CHAT = STORAGE_KEY + '-CHAT';
 const KEY_TIME = STORAGE_KEY + '-TIME';
 
-var L_IS_DEBUG = true;
+var L_IS_DEBUG = false;
 
 Parse.initialize("pocoweb-chat", "njLwbUJgejKCjC2y");
 
