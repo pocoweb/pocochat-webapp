@@ -2,15 +2,10 @@ const STORAGE_KEY = 'POCOWEB-CHAT-V1';
 const KEY_CHAT = STORAGE_KEY + '-CHAT';
 const KEY_TIME = STORAGE_KEY + '-TIME';
 
-var L_IS_DEBUG = false;
+//Parse.serverURL = 'http://localhost:1337/parse';
+Parse.serverURL = 'http://azure.pocoweb.com:11337/parse';
 
 Parse.initialize("pocoweb-chat", "njLwbUJgejKCjC2y");
-
-if (L_IS_DEBUG) {
-    Parse.serverURL = 'http://localhost:1337/parse';
-} else {
-    Parse.serverURL = 'http://azure.pocoweb.com:11337/parse';
-}
 
 var ParseSession = Parse.Object.extend('Messages');
 var ParseEmail = Parse.Object.extend('UserEmails');
