@@ -36,6 +36,24 @@
     <link href="http://cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
     <link href="http://cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
     <link href="dist/css/theme.css" rel="stylesheet">
+
+
+    <script type='text/javascript'>
+      var _vds = _vds || [];
+      window._vds = _vds;
+      (function(){
+        _vds.push(['setAccountId', '9fec34dbbd0d22bc']);
+        (function() {
+          var vds = document.createElement('script');
+          vds.type='text/javascript';
+          vds.async = true;
+          vds.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + 'dn-growing.qbox.me/vds.js';
+          var s = document.getElementsByTagName('script')[0];
+          s.parentNode.insertBefore(vds, s);
+        })();
+      })();
+    </script>
+
 </head>
 <body>    
     <div v-cloak id="login-page">
@@ -125,7 +143,7 @@
     
     <div v-cloak id="chat" v-show="isShow"></div>
     <script src="//cdn.bootcss.com/jquery/3.0.0-beta1/jquery.min.js"></script>
-    <script src="//cdn.bootcss.com/hellojs/1.13.1/hello.all.min.js"></script>
+    <!-- <script src="//cdn.bootcss.com/hellojs/1.13.1/hello.all.min.js"></script> -->
     <script src="//cdn.bootcss.com/marked/0.3.5/marked.min.js"></script>
     <script src="dist/vue.js"></script>
     <script src="dist/parse-1.8.3.min.js"></script>
@@ -135,28 +153,30 @@
 
     <script>
 
-        function github_login() {
-            hello('github').login({
-                response_type: 'code'
-            }).then(function(user) {
-                console.log(user);
-                console.log('You are signed in to github');
-                hello('github').api('/me').then(function(r) {
-                    // Inject it into the container
-                    alert("Hey - " + r.name + " - " + r.email);
-                });
-            }, function(e) {
-                alert('Signin error: ' + e.error.message);
-            });
-        }
+        // function github_login() {
+        //     hello('github').login({
+        //         response_type: 'code'
+        //     }).then(function(user) {
+        //         console.log(user);
+        //         console.log('You are signed in to github');
+        //         hello('github').api('/me').then(function(r) {
+        //             // Inject it into the container
+        //             alert("Hey - " + r.name + " - " + r.email);
+        //         });
+        //     }, function(e) {
+        //         alert('Signin error: ' + e.error.message);
+        //     });
+        // }
 
-        hello.init({
-            github: "90b3f6ed4f34d5c8d1cf"
-        }, {
-            oauth_proxy: 'http://localhost:1337/oauthproxy',
-        });
+        // hello.init({
+        //     github: "90b3f6ed4f34d5c8d1cf"
+        // }, {
+        //     oauth_proxy: 'http://localhost:1337/oauthproxy',
+        // });
 
     </script>
+
+
 
 </body>
 </html>
